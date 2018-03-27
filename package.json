@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config build/webpack.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +15,8 @@
     "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.2.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^2.0.13"
   }
 }
