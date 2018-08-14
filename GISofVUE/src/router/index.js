@@ -5,6 +5,10 @@ import Index from '@/components/Index'
 
 import firstMap from '@/components/firstMap'
 import basemap from '@/components/basemap'
+import AddLabelsFeatureLayer from '@/components/AddLabelsFeatureLayer'
+import heatmap from '@/components/heatmap'
+
+
 
 Vue.use(Router)
 
@@ -26,14 +30,14 @@ export default new Router({
           component: basemap
         },
         {
-          path: '/tileLayer',
-          name: 'TileLayer',
-          component: firstMap
+          path: '/AddLabelsFeatureLayer',
+          name: 'AddLabelsFeatureLayer',
+          component: AddLabelsFeatureLayer
         },
         {
-          path: '/drawModel',
-          name: 'DrawModel',
-          component: firstMap
+          path: '/heatmap',
+          name: 'heatmap',
+          component: heatmap
         },
         {
           path: '/baseTileLayer',

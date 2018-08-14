@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { arcgisConfig } from '../map/mapConfig'
-import * as esriLoader from 'esri-loader'
+
+import esriLoader from 'esri-loader'
 export default {
   name: 'basemap',
   data () {
@@ -19,14 +19,12 @@ export default {
     this.createMap()
   },
   methods: {
-    arcgisConfig: arcgisConfig,
     createMap () {
-      this.arcgisConfig()
       // 引入依赖
       esriLoader.loadModules([
         'esri/Map',
         'esri/views/MapView'
-      ], {url: window.arcgis.config.baseUrl}).then(([EsriMap, MapView]) => {
+      ]).then(([EsriMap, MapView]) => {
         this.map = new EsriMap({
           basemap: 'streets'
         })
@@ -43,12 +41,12 @@ export default {
 </script>
 
 <style scoped>
-@import url('http://123.56.17.204:8091/4.8/esri/css/main.css');
+
 
   #viewDiv {
     padding: 0;
     margin: 0;
-    height: 900px;
+    height: 100%;
     width: 100%;
   }
 </style>
