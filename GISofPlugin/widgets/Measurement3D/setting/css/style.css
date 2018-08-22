@@ -1,0 +1,26 @@
+.jimu-widget-measurement-setting {
+  font-size: 14px;
+  color: #596679;
+}
+.jimu-widget-measurement-setting .dijit {
+  margin-left: 10px;
+}
+.jimu-widget-measurement-setting .dijitSelect {
+  width: 180px;
+}
+.jimu-widget-measurement-setting .row {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.jimu-widget-measurement-setting .row + .row {
+  margin-top: 25px;
+}
+.jimu-widget-measurement-setting .left-cell {
+  display: inline-block;
+}
+.jimu-widget-measurement-setting .input-group {
+  margin-top: 15px;
+}
+.jimu-widget-measurement-setting .input-group > * + * {
+  margin-left: 20px;
+}

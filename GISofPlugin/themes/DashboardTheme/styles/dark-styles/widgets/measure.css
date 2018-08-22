@@ -1,0 +1,55 @@
+.jimu-widget-measurement .esri-direct-line-measurement-3d,
+.jimu-widget-measurement .esri-area-measurement-3d {
+  background-color: transparent;
+  color: inherit;
+}
+
+.jimu-widget-measurement select {
+  background-color: transparent;
+}
+
+.jimu-widget-measurement select option {
+  color: #333;
+}
+
+.jimu-widget-measurement .esri-button {
+  background-color: #666;
+  border-color: transparent;
+  color: #fff;
+}
+
+.jimu-widget-measurement .esri-button:hover {
+  background-color: #333;
+}
+
+.jimu-widget-measurement .esri-direct-line-measurement-3d__measurement-item--disabled,
+.jimu-widget-measurement .esri-area-measurement-3d__measurement-item--disabled {
+  color: rgba(255,255,255,0.4);
+}
+
+.jimu-widget-measurement__hint {
+  color: white;
+}
+
+.jimu-widget-measurement__header {
+  border-bottom-color: rgba(255,255,255,0.5);
+}
+
+.jimu-button-group > button {
+  background-color: rgba(0,0,0,0.5);
+  border: 0;
+  line-height: 22px;
+  color: white;
+}
+
+.jimu-button-group > button:hover {
+  background-color: rgba(0,0,0,0.75);
+}
+
+.jimu-button-group > button.jimu-state-active {
+  background-color: #24b5cc;
+}
+
+.jimu-button-group > button + button::before {
+  border-left-color: rgba(255,255,255,0.5);
+}

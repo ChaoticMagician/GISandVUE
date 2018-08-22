@@ -1,0 +1,40 @@
+<div>
+	<div class="row">
+		<div class="left-cell">${nls.defaultAreaUnit}</div>
+		<select data-dojo-attach-point="selectAreaUnit" data-dojo-type="dijit/form/Select">
+			<option value="metric">${nls.metric}</option>
+			<option value="imperial">${nls.imperial}</option>
+			<option value="square-inches">${nls.squareInches}</option>
+			<option value="square-feet">${nls.squareFeet}</option>
+			<option value="square-yards">${nls.squareYards}</option>
+			<option value="square-miles">${nls.squareMiles}</option>
+			<option value="square-us-feet">${nls.squareUSFeet}</option>
+			<option value="square-meters">${nls.squareMeters}</option>
+			<option value="square-kilometers">${nls.squareKilometers}</option>
+			<option value="acres">${nls.acres}</option>
+			<option value="ares">${nls.ares}</option>
+			<option value="hectares">${nls.hectares}</option>
+		</select>
+	</div>
+	<div class="row">
+		<div class="left-cell">${nls.defaultLengthUnit}</div>
+		<select data-dojo-attach-point="selectLengthUnit" data-dojo-type="dijit/form/Select">
+			<option value="metric">${nls.metric}</option>
+			<option value="imperial">${nls.imperial}</option>
+			<option value="inches">${nls.inches}</option>
+			<option value="feet">${nls.feet}</option>
+			<option value="yards">${nls.yards}</option>
+			<option value="miles">${nls.miles}</option>
+			<option value="nautical-miles">${nls.nauticalMiles}</option>
+			<option value="us-feet">${nls.feetUS}</option>
+			<option value="meters">${nls.meters}</option>
+			<option value="kilometers">${nls.kilometers}</option>
+		</select>
+	</div>
+	<div class="row">
+		<div class="left-cell">${nls.showtools}</div>
+		<div class="input-group">
+			<div data-dojo-type="jimu/dijit/CheckBox" data-dojo-attach-point="showArea" data-dojo-props="label: '${nls.showArea}'"></div>
+			<div data-dojo-type="jimu/dijit/CheckBox" data-dojo-attach-point="showDistance" data-dojo-props="label: '${nls.showDistance}'"></div>
+		</div>
+	</div>

@@ -1,0 +1,11 @@
+{
+  "measurement": {
+    "lengthUnit": "kilometers",
+    "areaUnit": "square-kilometers"
+  },
+  "showArea": true,
+  "showDistance": true,
+  "showLocation": false,
+  "defaultLengthUnit": "metric",
+  "defaultAreaUnit": "metric"
+}

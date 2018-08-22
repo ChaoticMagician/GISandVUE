@@ -1,0 +1,30 @@
+{
+  "allPlaceholder": "",
+  "showInfoWindowOnSelect": true,
+  "sources": [
+    {
+      "url": "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer",
+      "name": "Esri World Geocoder",
+      "singleLineFieldName": "SingleLine",
+      "placeholder": "Find address or place",
+      "countryCode": "",
+      "zoomScale": 50000,
+      "maxSuggestions": 6,
+      "maxResults": 6,
+      "searchInCurrentMapExtent": false,
+      "type": "locator"
+    },
+    {
+      "url": "https://www.arcgisonline.cn/portal/sharing/servers/40ce7e96c83c4b6ea80a1aa630ac8e1d/rest/services/World/GeocodeServer",
+      "name": "Esri World Batch Geocoder",
+      "singleLineFieldName": "SingleLine",
+      "placeholder": "Find address or place",
+      "countryCode": "",
+      "zoomScale": 50000,
+      "maxSuggestions": 6,
+      "maxResults": 6,
+      "searchInCurrentMapExtent": false,
+      "type": "locator"
+    }
+  ]
+}

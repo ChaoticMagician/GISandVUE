@@ -1,0 +1,32 @@
+.jimu-widget-layerlist .ground-tip > hr {
+  border-color: #999;
+}
+
+.jimu-widget-layerlist .ground-tip span {
+  background-color: #222;
+  color: #999;
+}
+
+.esri-layer-list .esri-layer-list__no-items,
+.jimu-widget-layerlist .jimu-widget-layeritem .jimu-checkbox .label {
+  color: #999;
+}
+
+.jimu-widget-layerlist .esri-layer-list__item-actions-menu-item {
+  color: rgba(255,255,255,0.5);
+}
+
+.jimu-widget-layerlist .esri-layer-list__item-actions-menu-item:hover {
+  background-color: transparent;
+  color: white;
+}
+
+.jimu-widget-layerlist .esri-layer-list__item-actions-menu-item--active,
+.jimu-widget-layerlist .esri-layer-list__item-actions-menu-item--active:hover {
+  background-color: transparent;
+  color: #ededed;
+}
+
+.jimu-widget-layerlist .esri-layer-list__item {
+  color: white;
+}

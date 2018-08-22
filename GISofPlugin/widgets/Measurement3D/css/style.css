@@ -1,0 +1,123 @@
+.esri-direct-line-measurement-3d {
+  pointer-events: auto;
+}
+
+.jimu-widget-measurement .hidden {
+  display: none !important;
+}
+
+.jimu-widget-measurement .esri-button {
+  height: 32px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.jimu-widget-measurement .measurement-button-wrapper {
+  padding: 12px 15px;
+}
+
+.jimu-button-group {
+  display: flex;
+  flex-direction: row;
+}
+
+.jimu-button-group > button {
+  font-family: inherit;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  line-height: 20px;
+  font-size: 1em;
+  flex-basis: 0;
+  flex-grow: 1;
+  transition: background-color 125ms ease-in-out;
+  position: relative;
+  z-index: 1;
+}
+
+
+.jimu-button-group > button:hover {
+  background: #f0f0f0;
+}
+
+.jimu-button-group > button.jimu-state-active {
+  background: #24b5cc;
+  border-color: #24b5cc;
+  color: #fff;
+  z-index: 2;
+}
+
+.jimu-button-group > button.jimu-state-active:before {
+  content: none;
+}
+
+.jimu-button-group > button:not(:disabled) {
+  cursor: pointer;
+}
+
+.jimu-button-group > button + button {
+  margin-left: -1px;
+  border-left-width: 0;
+}
+
+.jimu-button-group > button + button::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: -1px;
+  top: 4px;
+  bottom: 4px;
+  border-left: 1px solid #ccc;
+}
+
+.jimu-rtl .jimu-button-group > button + button {
+  margin-left: auto;
+  margin-right: -1px;
+  border-left-width: 1px;
+  border-right-width: 0;
+}
+
+.jimu-rtl .jimu-button-group > button + button::before {
+  right: -1px;
+  left: auto;
+}
+
+.jimu-button-group > button img {
+  vertical-align: middle;
+  margin-right: 8px;
+  pointer-events: none;
+}
+
+.jimu-rtl .jimu-button-group > button img {
+  margin-left: 8px;
+  margin-right: auto;
+}
+
+.jimu-widget-measurement__header {
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid #e7e7e7;
+  margin-bottom: 12px;
+}
+
+.jimu-widget-measurement__header img {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.jimu-rtl .jimu-widget-measurement__header img {
+  margin-left: 8px;
+  margin-right: auto;
+}
+
+.jimu-widget-measurement__hint {
+  color: #323232;
+  font-size: 14px;
+  padding: 12px 15px;
+}
+
+.jimu-widget-frame.jimu-container .jimu-widget-measurement__header {
+  margin: -14px -14px 14px;
+  padding: 14px 14px 14px;
+}

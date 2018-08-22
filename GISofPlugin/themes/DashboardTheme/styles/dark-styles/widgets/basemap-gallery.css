@@ -1,0 +1,21 @@
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item-title,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item:hover .esri-basemap-gallery__item-title,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item:focus .esri-basemap-gallery__item-title,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item--selected .esri-basemap-gallery__item-title,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item.esri-basemap-gallery__item--selected:hover .esri-basemap-gallery__item-title,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item.esri-basemap-gallery__item--selected:focus .esri-basemap-gallery__item-title {
+  color: white;
+}
+
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item:hover,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item:focus{
+  border-left-color: #444;
+  background-color: #444;
+}
+
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item--selected,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item.esri-basemap-gallery__item--selected:hover,
+.jimu-widget-basemap-gallery .esri-basemap-gallery__item.esri-basemap-gallery__item--selected:focus {
+  border-left-color: #666;
+  background-color: #666;
+}

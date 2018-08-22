@@ -1,0 +1,8 @@
+.jimu-widget-legend .esri-legend {
+  background-color: #222;
+  color: white;
+}
+
+.jimu-widget-legend .esri-legend__service {
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+}

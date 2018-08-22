@@ -1,0 +1,12 @@
+{
+  "name": "Measurement3D",
+  "platform": "HTML3D",
+  "2D": false,
+  "3D": true,
+  "version": "2.9",
+  "wabVersion": "2.9",
+  "author": "Esri R&D Center Beijing",
+  "description": "",
+  "copyright": "",
+  "license": "http://www.apache.org/licenses/LICENSE-2.0"
+}
