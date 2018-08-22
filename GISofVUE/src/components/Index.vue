@@ -9,6 +9,10 @@
               <el-menu-item index="1-1" route="basemap">基础地图</el-menu-item>
               <el-menu-item index="1-2" route="AddLabelsFeatureLayer">增加Feature图层</el-menu-item>
               <el-menu-item index="1-3" route="heatmap">热力图</el-menu-item>
+              <el-menu-item index="1-4" route="scenemap">三维地图</el-menu-item>
+              <el-menu-item index="1-5" route="ViewGoto">ViewGoto</el-menu-item>
+              <el-menu-item index="1-6" route="F2DTo3D">F2DTo3D</el-menu-item>
+              <el-menu-item index="1-7" route="groundDemo">ground三维</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -54,5 +58,9 @@ export default {
   }
   .el-main{
     padding: 4px;
+  }
+  .el-menu-item, .el-submenu__title{
+    height: 30px;
+    line-height: 30px;
   }
 </style>
