@@ -17,6 +17,7 @@ export default {
     },
   mounted:function(){
     this.createMap();
+    this.$store.commit('set_newview')
   },
   methods: {
     createMap () {

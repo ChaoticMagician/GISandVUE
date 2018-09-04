@@ -5,6 +5,9 @@ import login from '@/components/login'
 import home from '@/components/home'
 import permission from '@/components/login'
 
+import ModelMap from '@/components/home/modelmap'
+import retuarnMap from '@/components/home/retuarnMap'
+
 Vue.use(Router)
 
 export default new Router({
@@ -22,7 +25,19 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      component: home
+      component: home,
+      children:[
+        {
+          path: '/home/defaule',
+          name: 'defaule',
+          component: ModelMap
+        },
+        {
+          path: '/home/returnmap',
+          name: 'returnMap',
+          component: retuarnMap
+        }
+      ]
     },
     {
       path: '/permission',

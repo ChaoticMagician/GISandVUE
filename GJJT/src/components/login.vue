@@ -2,7 +2,7 @@
 <div>
     <div>
       {{map}}
-      {{this.$store.state.map.demo}}
+      {{this.$store.state.mapview.newview}}
     </div>
 
      <p>
@@ -17,7 +17,7 @@ export default {
   name: 'login',
   data () {
     return {
-      map: this.$store.state.map.demo
+      map: this.$store.state.mapview.newview
     }
   },
   computed:{
