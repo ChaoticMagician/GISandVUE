@@ -1,22 +1,25 @@
 <template>
     <div id="home-slot"  >
-        <slot :myBaseMap='myBaseMap' >
-            <p>地图组件加载失败</p>
-        </slot>
+      <arcgismap :my-base-map='myBaseMap' ></arcgismap>
     </div>
 </template>
 
 <script>
 import * as esriLoader from 'esri-loader'
+import arcgismap from '@/components/home/map'
 export default {
     name:'modelmap',
+    components:{
+      arcgismap
+    },
     data(){
         return{
             myBaseMap:{}
         }
     },
-  mounted:function(){
+  created:function(){
     this.createMap();
+    // this.$store.commit('set_newview')
   },
   methods: {
     createMap () {

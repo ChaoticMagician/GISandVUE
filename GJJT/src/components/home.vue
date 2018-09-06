@@ -1,22 +1,24 @@
 <template>
 <div>
     <listmenu id="list-all"></listmenu>
-    <!-- <p><button @click="chancemapmodel" >改变</button> </p> -->
-      <keep-alive>
-        <router-view>
-          <arcgismap :style="{height:thisheight}" style=" border: 1px solid #eee" slot-scope="mapinfo"  :my-base-map='mapinfo.myBaseMap' />
-        </router-view>
-      </keep-alive>
+
+    <router-view>
+      <arcgismap :style="{height:thisheight}" style=" border: 1px solid #eee" slot-scope="mapinfo"  :this-base-map='mapinfo.myBaseMap' />
+    </router-view>
+
 </div>
 </template>
 
 <script>
-import arcgismap from '@/components/home/map'
+import arcgismap from '@/components/home/tilemap'
 import listmenu from '@/components/home/list'
+
+import ModelMap from '@/components/home/modelmap'
+import retuarnMap from '@/components/home/retuarnMap'
 export default {
   name: 'home',
   components:{
-    arcgismap,listmenu
+    arcgismap,listmenu,ModelMap,retuarnMap
   },
   data () {
     return {
@@ -24,7 +26,9 @@ export default {
     }
   },
   mounted:function(){
-    this.thisheight = (window.innerHeight-2)+'px'
+    this.thisheight = (window.innerHeight-2)+'px';
+  },
+  methods:{
   }
 
 }

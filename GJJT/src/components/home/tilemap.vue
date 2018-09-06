@@ -9,33 +9,23 @@ import * as esriLoader from 'esri-loader'
 export default {
   name: 'tilemap',
   props:  {
-    myBaseMap:{}
+    thisBaseMap:{}
   },
   data () {
     return {
-        thismap: Object,
-        thisview: Object,
-    }
-  },
-  mounted () {
-    this.createMap();
-    this.createView();
-  },
-  beforeUpdate(){
-    this.createView()
-  },
-  computed:{
-    nowmapview:function(){
-      return this.$store.state.mapview.newview;
+      thismap: Object,
+      thisview: Object,
     }
   },
   watch: {
-    nowmapview:function(olddata,newdata){
+    thisBaseMap:function(olddata,newdata){
+      if(newdata)
         this.createView()
-    }
+    },
+    deep: true
   },
   methods: {
-    createMap () {
+    createView () {
       //这是esri-loader选项配置，本处是配置dojoconfig
       const options = {
         dojoConfig:{
@@ -44,20 +34,34 @@ export default {
           }
         }
       };
-    },
-    createView () {
       // 引入依赖
       esriLoader.loadModules([
         "esri/views/MapView",
+        "esri/geometry/Extent",
         "dojo/domReady!"
-      ]).then(([MapView]) => {
+      ]).then(([MapView,Extent]) => {
         var view = new MapView({
-          map: this.myBaseMap,
+          map: this.thisBaseMap,
           container: "viewDiv",
           zoom:6,
-          center:[113,32]
         });
+        // //设置显示的最大层级
+        // view.constraints = {
+        //   minZoom: 6, 
+        //   rotationEnabled: false  // Disables map rotation
+        // };
+        //设置初始显示范围
+        view.extent = new Extent({
+          xmin: 116.60,
+          ymin: 38.62,
+          xmax: 118.19,
+          ymax: 39.24,
+          spatialReference: {
+            wkid: 4326
+          }
+        })
         this.thisview = view;
+        console.log(this.thisview);
       })
     },
   }

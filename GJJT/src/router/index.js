@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import login from '@/components/login'
 
 import home from '@/components/home'
-import permission from '@/components/login'
+import test from '@/components/test'
 
 import ModelMap from '@/components/home/modelmap'
 import retuarnMap from '@/components/home/retuarnMap'
@@ -40,9 +40,9 @@ export default new Router({
       ]
     },
     {
-      path: '/permission',
-      name: 'permission',
-      component: permission
+      path: '/test',
+      name: 'test',
+      component: test
     }
   ]
 })

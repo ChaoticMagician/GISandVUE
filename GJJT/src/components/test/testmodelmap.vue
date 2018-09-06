@@ -15,8 +15,9 @@ export default {
             myBaseMap:{}
         }
     },
-  mounted:function(){
+  created:function(){
     this.createMap();
+    this.$store.commit('set_newview')
   },
   methods: {
     createMap () {
