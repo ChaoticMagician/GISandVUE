@@ -45,4 +45,22 @@ export default {
     top: 120px;
     left: 15px;
 }
+
+
+  /* 这里是调整esri地图的css */
+  .esri-ui .esri-attribution {
+    height: 0px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .esri-attribution__powered-by {
+    width: 0px;
+    font-weight: 400;
+    padding: 0 5px;
+    text-align: right;
+    white-space: nowrap;
+    align-self: flex-end;
+  }
 </style>
