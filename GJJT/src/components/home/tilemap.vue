@@ -12,18 +12,15 @@
         <div class="toolsListDiv" id="legend"><i class="toolsLIstIcon iconfont icon-ditudaohang-"></i>图例</div>
         <div class="toolsListDiv" id="remove"><i class="toolsLIstIcon iconfont icon-ditu"></i>清除</div>
       </div>
-      <div id='layersList'   >
-        <div @mouseenter.stop.self="chancelistcomponent(true,'baseMapList')" :class="'layersListDiv'" id='baseMapList' ><i class="workLIstIcon iconfont icon-fangda"></i>底图切换</div>
-        <div @mouseenter.stop.self="chancelistcomponent(true,'layerList')" :class="'layersListDiv'" id="layerList"><i class="workLIstIcon iconfont icon-suoxiao1"></i>图层控制</div>
-        <div @mouseenter.stop.self="chancelistcomponent(true,'tameList')" :class="'layersListDiv'" id="tameList"><i class="workLIstIcon iconfont icon-fangda1"></i>实时数据</div>
-        <div
-         @mouseleave.stop.self="chancelistcomponent(false,'baseMapList',$event)"
-         v-if="whichListIs"
-         class="layersListPopup">
+      <div id='layersList' @mouseleave.stop.self="chancelistcomponent(null,'baseMapList',$event)">
+        <div @mouseenter.stop.self="chancelistcomponent(1,'baseMapList')" :class="['layersListDiv',whichListIs==1? 'layersListDivIs':'']" id='baseMapList' ><i class="workLIstIcon iconfont icon-fangda"></i>底图切换</div>
+        <div @mouseenter.stop.self="chancelistcomponent(2,'layerList')" :class="['layersListDiv',whichListIs==2? 'layersListDivIs':'']" id="layerList"><i class="workLIstIcon iconfont icon-suoxiao1"></i>图层控制</div>
+        <div @mouseenter.stop.self="chancelistcomponent(3,'tameList')" :class="['layersListDiv',whichListIs==3? 'layersListDivIs':'']" id="tameList"><i class="workLIstIcon iconfont icon-fangda1"></i>实时数据</div>
           <keep-alive>
-            <component :is="listcomponent"></component>
+            <component :is="listcomponent"
+            v-if="whichListIs"
+            class="layersListPopup"></component>
           </keep-alive>
-        </div>
       </div>
   </div>
 </template>
@@ -31,8 +28,8 @@
 <script>
 import * as esriLoader from 'esri-loader'
 import baseMapList from '@/components/home/layersList/baseMapList'
-import layerList from '@/components/home/layersList/layerList'
-import tameList from '@/components/home/layersList/tameList'
+import layerList   from '@/components/home/layersList/layerList'
+import tameList    from '@/components/home/layersList/tameList'
 export default {
   name: 'tilemap',
   components:{
@@ -45,8 +42,9 @@ export default {
     return {
       thismap: Object,
       thisview: Object,
+
       listcomponent:'baseMapList',
-      whichListIs: false
+      whichListIs: null
     }
   },
   mounted(){
@@ -70,11 +68,56 @@ export default {
       };
       // 引入依赖
       esriLoader.loadModules([
+        "esri/Map",
+        "esri/Basemap",
+        "esri/layers/WebTileLayer",
+        "esri/geometry/SpatialReference", 
+
         "esri/views/MapView",
         "esri/geometry/Extent",
         "esri/widgets/Zoom",
         "dojo/domReady!"
-      ]).then(([MapView,Extent,Zoom]) => {
+      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,
+        MapView,Extent,Zoom]) => {
+        //加载所有的WebTileLayer图层
+        let onThisBaseLayers = window.arcgis.baseLayers;
+        let webTileLayerObjArr = {};
+        for(var key in onThisBaseLayers ){
+          if(onThisBaseLayers[key].type == 1){
+            let webTileLayerObj = new WebTileLayer(onThisBaseLayers[key].config);
+              webTileLayerObjArr[onThisBaseLayers[key].config.id] = webTileLayerObj;
+            }
+        }(key);
+        console.log(webTileLayerObjArr);
+        //依据配置文件将WebTileLayer图层，组成baseMap
+        console.log(window.arcgis.baseMapList)
+        let onThisBaseMapList = window.arcgis.baseMapList;
+        let BasemapObjArr = {};
+        onThisBaseMapList.forEach(thisObj => {
+          let baseLayers = [];
+          thisObj.baseLayers.forEach(thisObj =>{
+            baseLayers[baseLayers.length] = webTileLayerObjArr[thisObj];
+          })
+
+          let BasemapObj = new Basemap({
+            id: thisObj.id,
+            title: thisObj.title,
+            thumbnailUrl: thisObj.thumbnailUrl,
+            baseLayers: baseLayers
+          });
+          BasemapObjArr[thisObj.id] = BasemapObj;
+        });
+        console.log(BasemapObjArr);
+        //20180910时间戳
+        //创建map对象
+        // let map = new Map({
+        //   basemap: {
+        //     baseLayers: []
+        //   }
+        // });
+
+
+
         //依据传进来的map获取创建视图
         var view = new MapView({
           map: this.thisBaseMap,
@@ -137,7 +180,6 @@ export default {
       })
     },
     chancelistcomponent(whichListEven,whichComponentEven,e){
-      console.log([whichListEven,whichComponentEven,e]);
       this.whichListIs = whichListEven;
       if(whichListEven){
         this.listcomponent = whichComponentEven;
@@ -186,9 +228,9 @@ export default {
   }
     /* 地图图层控制栏样式区域 */
   #layersList{
-    width: 23.66667%;
+    width: 24%;
     margin-left: 29.16667%;
-    left: 42%;
+    left: 40%;
     position: relative;
     top: -100%;
     box-sizing: border-box;
@@ -217,11 +259,14 @@ export default {
   .layersListPopup{
     display: inline-flex;
     flex-basis: 99%;
-    margin-top: -3px;
+    margin-top: 1px;
     padding: 10px;
     background: white;
     border: 1px solid rgba(0, 0, 0, 0.19);
     border-radius: 0.5em;
     box-shadow: 0px 1px 2px 0px #73737382;
+  }
+  .layersListDivIs{
+    background-image: linear-gradient(#a8a8a8, #bbb);
   }
 </style>

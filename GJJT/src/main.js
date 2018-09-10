@@ -16,7 +16,7 @@ import store from './store'
 //配置esri-loader的arcgis for js的API。本处为全局配置。
 //可以在各组件例面配置，意味着不同组件可以应用不同的API
 arcgisConfig();
-esriLoader.loadScript({url:window.arcgis.config.baseUrl})
+esriLoader.loadScript({url:window.arcgis.config.proxyUrl})
 //配置element组件
 Vue.use(ElementUI)
 
