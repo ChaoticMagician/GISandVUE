@@ -444,19 +444,53 @@ export function arcgisConfig () {
     /***
      *baseMapList的配置列表
      *重在表示每个按钮所显示的baselayer
+     *key不可重复，有且有一个key为“default”，，为地图的默认底图,
+     *type为map的类型，主要为‘dianzi’、和‘yaogan’，是控制basemap缩略图的要素。
+     ps：vue动态添加图片路径太烦了，给图片懒加载，回头再说
     ***/
     baseMapList:[
       {
+        key:'difault',
+        type:'dianzi',
         id:"dianziditu",
         title:"电子地图",
-        thumbnailUrl:"D:/webappSoft/GISandVUE/GJJT/src/assets/map_img/instmap.PNG",
+        thumbnailUrl:"@/assets/mapimg/instmap.PNG",
         baseLayers:['diazilayer','biaozhulayer']
       },
       {
+        key:'other1',
+        type:'yaogan',
         id:"yaoganyingxiang",
-        title:"yaoganyingxiang",
-        thumbnailUrl:"D:/webappSoft/GISandVUE/GJJT/src/assets/map_img/sanwei1.PNG",
+        title:"遥感影像",
+        thumbnailUrl:"@/assets/mapimg/sanwei1.PNG",
         baseLayers:['yaoganlayer','biaozhulayer']
+      },
+    ],
+    /***
+     * layersList中type的能值base-dynamic | base-elevation | base-tile | bing-maps | elevation | feature 
+     * | graphics | group | imagery | integrated-mesh | map-image | open-street-map | point-cloud |
+     *  scene | stream | tile | unknown | unsupported | vector-tile | web-tile
+     * 是图层的类型,暂时只支持imagery类型，
+     * 
+     * 
+    
+    ***/
+    layersList:[
+      {
+        id:'xiaowangzhuang',
+        title:'小王王庄数据',
+        url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
+        type:'imagery',
+        opacity: 1,
+        visible: true
+      },
+      {
+        id:'xiaowangzhuang2',
+        title:'小王王庄数据2',
+        url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
+        type:'imagery',
+        opacity: 0.5,
+        visible: false
       },
     ]
   }

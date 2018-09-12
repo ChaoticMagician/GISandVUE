@@ -7,31 +7,17 @@
 </template>
 
 <script>
-import * as esriLoader from 'esri-loader';
 export default {
-    name:'retuarnMap',
-    data(){
-        return{
-            myBaseMap:{}
-        }
-    },
+  name:'retuarnMap',
+  data(){
+    return{
+      myBaseMap:{}
+    }
+  },
   mounted:function(){
-    this.createMap();
   },
   methods: {
-    createMap () {
-      //这是esri-loader选项配置，本处是配置dojoconfig
-      esriLoader.loadModules([
-        "esri/Map"
-      ]).then(([Map]) => {
-        //定义地图
-        var map = new Map({
-          // basemap: customBasemap,
-          basemap: "topo"
-        });
-        this.myBaseMap = map;
-      })
-    }
+    
   }
 }
 </script>

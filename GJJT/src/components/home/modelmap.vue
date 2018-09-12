@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import * as esriLoader from 'esri-loader'
 export default {
     name:'modelmap',
     data(){
@@ -16,23 +15,9 @@ export default {
         }
     },
   mounted:function(){
-    this.createMap();
+
   },
   methods: {
-    createMap () {
-      //这是esri-loader选项配置，本处是配置dojoconfig
-      esriLoader.loadModules([
-        "esri/Map"
-      ]).then(([Map]) => {
-        // map代码开始锚点
-        //定义地图
-        var map = new Map({
-          // basemap: customBasemap,
-          basemap: "streets"
-        });
-        this.myBaseMap = map;
-      })
-    }
   }
 }
 </script>

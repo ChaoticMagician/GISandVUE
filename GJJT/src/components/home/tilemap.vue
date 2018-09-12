@@ -17,8 +17,10 @@
         <div @mouseenter.stop.self="chancelistcomponent(2,'layerList')" :class="['layersListDiv',whichListIs==2? 'layersListDivIs':'']" id="layerList"><i class="workLIstIcon iconfont icon-suoxiao1"></i>图层控制</div>
         <div @mouseenter.stop.self="chancelistcomponent(3,'tameList')" :class="['layersListDiv',whichListIs==3? 'layersListDivIs':'']" id="tameList"><i class="workLIstIcon iconfont icon-fangda1"></i>实时数据</div>
           <keep-alive>
-            <component :is="listcomponent"
+            <component 
+            :is="listcomponent"
             v-if="whichListIs"
+            @chance-basemap-even='chanceBasemap'
             class="layersListPopup"></component>
           </keep-alive>
       </div>
@@ -35,12 +37,9 @@ export default {
   components:{
     baseMapList,layerList,tameList
   },
-  props:  {
-    thisBaseMap:{},
-  },
   data () {
     return {
-      thismap: Object,
+      BasemapObjArr: Object,
       thisview: Object,
 
       listcomponent:'baseMapList',
@@ -48,13 +47,7 @@ export default {
     }
   },
   mounted(){
-  },
-  watch: {
-    thisBaseMap:function(olddata,newdata){
-      if(newdata)
-        this.createView()
-    },
-    deep: true
+    this.createView()
   },
   methods: {
     createView () {
@@ -88,9 +81,7 @@ export default {
               webTileLayerObjArr[onThisBaseLayers[key].config.id] = webTileLayerObj;
             }
         }(key);
-        console.log(webTileLayerObjArr);
         //依据配置文件将WebTileLayer图层，组成baseMap
-        console.log(window.arcgis.baseMapList)
         let onThisBaseMapList = window.arcgis.baseMapList;
         let BasemapObjArr = {};
         onThisBaseMapList.forEach(thisObj => {
@@ -102,25 +93,19 @@ export default {
           let BasemapObj = new Basemap({
             id: thisObj.id,
             title: thisObj.title,
-            thumbnailUrl: thisObj.thumbnailUrl,
             baseLayers: baseLayers
           });
-          BasemapObjArr[thisObj.id] = BasemapObj;
+          BasemapObjArr[thisObj.key] = BasemapObj;
         });
-        console.log(BasemapObjArr);
-        //20180910时间戳
-        //创建map对象
-        // let map = new Map({
-        //   basemap: {
-        //     baseLayers: []
-        //   }
-        // });
-
-
-
+        this.BasemapObjArr = BasemapObjArr;
+        // 创建map对象
+        let map = new Map({
+          basemap:  BasemapObjArr.difault
+        });
         //依据传进来的map获取创建视图
         var view = new MapView({
-          map: this.thisBaseMap,
+          // map: this.thisBaseMap,
+          map: map,
           container: "viewDiv",
           zoom:6,
         });
@@ -166,15 +151,14 @@ export default {
       })
     },
     //调用底图切换组件
-    chanceBasemap(){
-      var testv = "streets";
+    chanceBasemap(goToBasemap){
       // 引入依赖
       esriLoader.loadModules([
         "esri/widgets/BasemapToggle"
       ]).then(([BasemapToggle]) => {
         var basemapToggle = new BasemapToggle({
           view: this.thisview,
-          nextBasemap: testv  
+          nextBasemap: this.BasemapObjArr[goToBasemap]  
         });
         basemapToggle.toggle();
       })
