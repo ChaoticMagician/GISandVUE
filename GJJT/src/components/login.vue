@@ -101,23 +101,24 @@ export default {
         this.BasemapObjArr = BasemapObjArr;
 
         //依据配置文件创建layers对象
-        // let onLayersConfig = window.arcgis.layersList;
-        // config
-
-
-        // var ImageLayer = new MapImageLayer({
-        //   id: "xiaowangzuang",
-        //   url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
-        // });
-
-
-
-
-
+        let onLayersConfig = window.arcgis.layersList;
+        let layersArr = [];
+        onLayersConfig.forEach(tram => {
+          if(tram.type == "map-image"){
+            let ImageLayer = new MapImageLayer({
+              id: tram.id,
+              title: tram.title,
+              url: tram.url,
+              opacity: tram.opacityd,
+              visible: tram.visible
+            });
+            layersArr.push(ImageLayer);
+          }
+        });
         // 创建map对象
         let zheshigemap = new Map({
           basemap:  BasemapObjArr.difault,
-          layers: [ImageLayer]
+          layers:layersArr
         });
         //依据传进来的map获取创建视图
         var view = new MapView({
@@ -143,7 +144,8 @@ export default {
         view.when(
           (view)=>{
             view.goTo(extent);
-            // zheshigemap.findLayerById("xiaowangzuang").visible = false;
+            console.log(zheshigemap.findLayerById("xiaowangzhuang"));
+            zheshigemap.findLayerById("xiaowangzhuang").visible = false;
             },
           (error)=>{
             console.log(error);

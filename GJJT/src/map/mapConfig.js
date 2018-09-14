@@ -480,7 +480,7 @@ export function arcgisConfig () {
         id:'xiaowangzhuang',
         title:'小王王庄数据',
         url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
-        type:'imagery',
+        type:'map-image',
         opacity: 1,
         visible: true
       },
@@ -488,7 +488,7 @@ export function arcgisConfig () {
         id:'xiaowangzhuang2',
         title:'小王王庄数据2',
         url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
-        type:'imagery',
+        type:'map-image',
         opacity: 0.5,
         visible: false
       },

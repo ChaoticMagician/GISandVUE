@@ -6,9 +6,8 @@
     :key="trem.key"
     @click="chanceBasemap(trem.key)"
     >
-    <img :src='trem.type=="dianzi"? imgurl.dianziimgurl:imgurl.yingxiangimgurl' alt="">
-    <span class="base-map-list-li-span">{{trem.title}}</span>
-
+      <img :src='trem.type=="dianzi"? imgurl.dianziimgurl:imgurl.yingxiangimgurl' alt="">
+      <span class="base-map-list-li-span">{{trem.title}}</span>
     </li>
   </ul>
 </template>
@@ -22,7 +21,6 @@ export default {
     return{
       listdata: window.arcgis.baseMapList,
       imgurl:{dianziimgurl,yingxiangimgurl}
-
     }
   },
   methods:{
@@ -31,7 +29,6 @@ export default {
         console.log(this.listdata);
       }
   }
-
 }
 </script>
 
