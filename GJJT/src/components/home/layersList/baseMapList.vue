@@ -26,7 +26,6 @@ export default {
   methods:{
       chanceBasemap(newBasemap){
         this.$emit('chance-basemap-even', newBasemap)
-        console.log(this.listdata);
       }
   }
 }
@@ -38,6 +37,7 @@ export default {
   list-style: none;
   width: 390px;
   flex-wrap:wrap;
+  color: #3e3e3e;
 }
 .base-map-list-li-span {
   position: absolute;
@@ -45,7 +45,10 @@ export default {
   margin-left: 12px;
   background: white;
   text-align: center;
-  color: #3e3e3e;
+
+}
+.base-map-list-li:hover{
+  color:rgba(92, 142, 223, 0.822)
 }
 </style>
 

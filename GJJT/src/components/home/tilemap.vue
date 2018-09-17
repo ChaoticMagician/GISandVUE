@@ -69,12 +69,14 @@ export default {
         "esri/layers/WebTileLayer",
         "esri/geometry/SpatialReference",
         "esri/layers/MapImageLayer",
+        "esri/layers/WMSLayer",
+        "esri/config",
 
         "esri/views/MapView",
         "esri/geometry/Extent",
         "esri/widgets/Zoom",
         "dojo/domReady!"
-      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,
+      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,WMSLayer,esriConfig,
         MapView,Extent,Zoom]) => {
         //加载所有的WebTileLayer图层
         let onThisBaseLayers = window.arcgis.baseLayers;
@@ -86,6 +88,7 @@ export default {
             }
         }(key);
         //依据配置文件将WebTileLayer图层，组成baseMap
+        esriConfig.request.corsEnabledServers.push("https://t0.tianditu.com");
         let onThisBaseMapList = window.arcgis.baseMapList;
         let BasemapObjArr = {};
         onThisBaseMapList.forEach(thisObj => {
@@ -103,6 +106,7 @@ export default {
         });
         this.BasemapObjArr = BasemapObjArr;
         //依据配置文件创建layers对象
+        esriConfig.request.corsEnabledServers.push("http://123.56.17.204:8081");
         let onLayersConfig = window.arcgis.layersList;
         let layersArr = [];
         onLayersConfig.forEach(tram => {
@@ -115,8 +119,24 @@ export default {
               visible: tram.visible
             });
             layersArr.push(ImageLayer);
+          }else if(tram.type == "wms"){
+            //创建本地WMS图层，，
+            var WMSLayerlayer1 = new WMSLayer({
+              id: tram.id,
+              title: tram.title,
+              url: tram.url,
+              sublayers: [{
+                name: tram.sublayers.name
+              }],
+              Version: tram.Version,
+              opacity: tram.opacityd,
+              visible: tram.visible
+            });
+            layersArr.push(WMSLayerlayer1);
           }
         });
+        
+
         // 创建map对象
         let map = new Map({
           basemap:  BasemapObjArr.difault,
@@ -189,7 +209,6 @@ export default {
     chancelayers(chancedlayerid){
       // 引入依赖
       esriLoader.loadModules([
-        //啦啦啦啦，没有依赖
       ]).then(([]) => {
         let chancedlayerobj = this.thismap.findLayerById(chancedlayerid);
         chancedlayerobj.visible = !chancedlayerobj.visible;

@@ -21,6 +21,7 @@
             :is="listcomponent"
             v-if="whichListIs"
             @chance-basemap-even='chanceBasemap'
+            @chance-layers-even='chancelayers'
             class="layersListPopup"></component>
           </keep-alive>
       </div>
@@ -41,6 +42,8 @@ export default {
     return {
       BasemapObjArr: Object,
       thisview: Object,
+      thismap: Object,
+      layerListEvent:{},
 
       listcomponent:'baseMapList',
       whichListIs: null
@@ -64,7 +67,7 @@ export default {
         "esri/Map",
         "esri/Basemap",
         "esri/layers/WebTileLayer",
-        "esri/geometry/SpatialReference", 
+        "esri/geometry/SpatialReference",
         "esri/layers/MapImageLayer",
 
         "esri/views/MapView",
@@ -99,7 +102,6 @@ export default {
           BasemapObjArr[thisObj.key] = BasemapObj;
         });
         this.BasemapObjArr = BasemapObjArr;
-
         //依据配置文件创建layers对象
         let onLayersConfig = window.arcgis.layersList;
         let layersArr = [];
@@ -116,19 +118,21 @@ export default {
           }
         });
         // 创建map对象
-        let zheshigemap = new Map({
+        let map = new Map({
           basemap:  BasemapObjArr.difault,
-          layers:layersArr
+          layers:   layersArr
         });
         //依据传进来的map获取创建视图
         var view = new MapView({
-          map: zheshigemap,
+          // map: this.thisBaseMap,
+          map: map,
           container: "viewDiv",
           zoom:6,
         });
         //设置显示的最大层级
         view.constraints = {
-          minZoom: 6, 
+          maxZoom: 16,
+          minZoom: 0, 
           rotationEnabled: false  // Disables map rotation
         };
         //设置初始显示范围
@@ -144,8 +148,6 @@ export default {
         view.when(
           (view)=>{
             view.goTo(extent);
-            console.log(zheshigemap.findLayerById("xiaowangzhuang"));
-            zheshigemap.findLayerById("xiaowangzhuang").visible = false;
             },
           (error)=>{
             console.log(error);
@@ -167,9 +169,10 @@ export default {
           }
         }
         this.thisview = view;
+        this.thismap = map;
       })
     },
-    //调用底图切换组件
+    //底图切换组件调用本方法切换底图
     chanceBasemap(goToBasemap){
       // 引入依赖
       esriLoader.loadModules([
@@ -180,6 +183,15 @@ export default {
           nextBasemap: this.BasemapObjArr[goToBasemap]  
         });
         basemapToggle.toggle();
+      })
+    },
+    //图层切换组件调用本方法切换图层
+    chancelayers(chancedlayerid){
+      // 引入依赖
+      esriLoader.loadModules([
+      ]).then(([]) => {
+        let chancedlayerobj = this.thismap.findLayerById(chancedlayerid);
+        chancedlayerobj.visible = !chancedlayerobj.visible;
       })
     },
     chancelistcomponent(whichListEven,whichComponentEven,e){

@@ -467,10 +467,8 @@ export function arcgisConfig () {
       },
     ],
     /***
-     * layersList中type的能值base-dynamic | base-elevation | base-tile | bing-maps | elevation | feature 
-     * | graphics | group | imagery | integrated-mesh | map-image | open-street-map | point-cloud |
-     *  scene | stream | tile | unknown | unsupported | vector-tile | web-tile
-     * 是图层的类型,暂时只支持imagery类型，
+     * layersList中type的能值map-image | wms-layer
+     * 是图层的类型,暂时只支持imagery和WMS类型，
      * 
      * 
     
@@ -482,16 +480,44 @@ export function arcgisConfig () {
         url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
         type:'map-image',
         opacity: 1,
-        visible: true
+        visible: false
       },
       {
-        id:'xiaowangzhuang2',
-        title:'小王王庄数据2',
-        url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
-        type:'map-image',
-        opacity: 0.5,
+        id:'fgm',
+        title:'楼宇覆盖面',
+        url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        sublayers:{
+          name: "FGM"
+        },
+        type:'wms',
+        Version:'1.1.0',
+        opacity: 1,
+        visible: false
+      },
+      {
+        id:'mz',
+        title:'小王庄门址',
+        url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        sublayers:{
+          name: "MZ"
+        },
+        type:'wms',
+        Version:'1.1.0',
+        opacity: 1,
+        visible: false
+      },
+      {
+        id:'dl',
+        title:'小王庄道路',
+        url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        sublayers:{
+          name: "DL"
+        },
+        type:'wms',
+        Version:'1.1.0',
+        opacity: 1,
         visible: false
       },
     ]
-  }
+  };
 }
