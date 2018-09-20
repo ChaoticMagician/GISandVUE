@@ -50,10 +50,10 @@ export default {
     }
   },
   mounted(){
-    this.createView()
+    this.createView(this.drawPolygonMeasueArea,this.drawPolylineMeasuelong)
   },
   methods: {
-    createView () {
+    createView (drawPolygonMeasueArea,drawPolylineMeasuelong) {
       //这是esri-loader选项配置，本处是配置dojoconfig
       const options = {
         dojoConfig:{
@@ -71,12 +71,13 @@ export default {
         "esri/layers/MapImageLayer",
         "esri/layers/WMSLayer",
         "esri/config",
+        "esri/views/2d/draw/Draw",
 
         "esri/views/MapView",
         "esri/geometry/Extent",
         "esri/widgets/Zoom",
         "dojo/domReady!"
-      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,WMSLayer,esriConfig,
+      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,WMSLayer,esriConfig,Draw,
         MapView,Extent,Zoom]) => {
         //加载所有的WebTileLayer图层
         let onThisBaseLayers = window.arcgis.baseLayers;
@@ -186,8 +187,17 @@ export default {
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
             case "allmap" :view.goTo(extent);break;
+            case "long" : view.graphics.removeAll();
+                          // var drawL = new Draw({view: view});
+                          //     drawPolylineMeasuelong(drawL,view,'long');
+                          break;
+            case "area" : view.graphics.removeAll();
+                          var draw = new Draw({view: view});
+                              drawPolygonMeasueArea(draw,view,'area');
+                          break;
+            case "remove" :view.graphics.removeAll();break;
           }
-        }
+        };
         this.thisview = view;
         this.thismap = map;
       })
@@ -214,6 +224,112 @@ export default {
         chancedlayerobj.visible = !chancedlayerobj.visible;
       })
     },
+    //这个方法是绘制面实现面积测量
+    drawPolygonMeasueArea(draw, view){
+      // 引入依赖
+      esriLoader.loadModules([
+        "esri/Graphic",
+        "esri/geometry/Polygon",
+        "esri/geometry/geometryEngine",
+      ]).then(([Graphic,Polygon,geometryEngine]) => {
+        var action = draw.create("polygon");
+        view.focus();
+        action.on("vertex-add", drawPolygon);
+        action.on("cursor-update", drawPolygon);
+        action.on("vertex-remove", drawPolygon);
+        action.on("draw-complete", drawPolygon);
+        function drawPolygon(event) {
+          var vertices = event.vertices;
+          //删除现有的图形
+          view.graphics.removeAll();
+          //创建一个新的多边形
+          var polygon = createPolygon(vertices);
+          //将创建的多边形放到绘图层
+          var graphic = createGraphic(polygon);
+          view.graphics.add(graphic);
+          //计算多边形的面积
+          var area = geometryEngine.geodesicArea(polygon, "square-kilometers");
+          if (area < 0) {
+            //如果需要，简化多边形并再次计算面积
+            var simplifiedPolygon = geometryEngine.simplify(polygon);
+            if (simplifiedPolygon) {
+              area = geometryEngine.geodesicArea(simplifiedPolygon, "square-kilometers");
+            }
+          }
+          //开始显示多边形的面积
+          labelAreas(polygon, area);
+        }
+        //使用提供的顶点创建多边形
+        function createPolygon(vertices) {
+          return new Polygon({
+            rings: vertices,
+            spatialReference: view.spatialReference
+          });
+        }
+
+        // 创建一个新的图形，表示在视图上绘制的多边形
+        function createGraphic(polygon) {
+          var graphic = new Graphic({
+            geometry: polygon,
+            symbol: {
+              type: "simple-fill", // 自动为SimpleFillSymbol
+              color: [255, 110, 180, 0.6],
+              style: "solid",
+              outline: { // 自动为SimpleLineSymbol
+                color: '#EEAD0E',
+                width: 2
+              }
+            }
+          });
+          return graphic;
+        }
+
+        //用它的面积标记polyon
+        function labelAreas(geom, area) {
+          var graphic = new Graphic({
+            geometry: geom.centroid,
+            symbol: {
+              type: "text",
+              color: "white",
+              haloColor: "black",
+              haloSize: "1px",
+              text: area.toFixed(2) + "平方公里",
+              xoffset: 3,
+              yoffset: 3,
+              font: { 
+                size: 14,
+                family: "sans-serif"
+              }
+            }
+          });
+          view.graphics.add(graphic);
+        }
+      })
+    },
+    //这个方法是绘制线实现长度测量
+    drawPolylineMeasuelong(draw, view){
+      // 引入依赖
+      esriLoader.loadModules([
+        "esri/Graphic",
+        "esri/geometry/Polyline",
+        "esri/geometry/geometryEngine",
+      ]).then(([Graphic,Polyline,geometryEngine]) => {
+        var action = draw.create("Polyline",
+        {mode: "click"}
+        );
+        view.focus();
+        action.on("vertex-add", drawPolyline);
+        action.on("cursor-update", drawPolyline);
+        action.on("vertex-remove", drawPolyline);
+        action.on("draw-complete", drawPolyline);
+        function drawPolyline(event) {
+
+        };
+
+
+      })
+    },
+    //这是组件切换组件
     chancelistcomponent(whichListEven,whichComponentEven,e){
       this.whichListIs = whichListEven;
       if(whichListEven){
