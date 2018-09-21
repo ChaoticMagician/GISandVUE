@@ -474,14 +474,14 @@ export function arcgisConfig () {
     
     ***/
     layersList:[
-      {
-        id:'xiaowangzhuang',
-        title:'小王王庄数据',
-        url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
-        type:'map-image',
-        opacity: 1,
-        visible: false
-      },
+      // {
+      //   id:'xiaowangzhuang',
+      //   title:'小王王庄数据',
+      //   url: "http://localhost:6080/arcgis/rest/services/localhostdata/XWZdemo/MapServer",
+      //   type:'map-image',
+      //   opacity: 1,
+      //   visible: false
+      // },
       {
         id:'fgm',
         title:'楼宇覆盖面',

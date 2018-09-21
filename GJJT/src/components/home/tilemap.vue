@@ -50,7 +50,8 @@ export default {
     }
   },
   mounted(){
-    this.createView(this.drawPolygonMeasueArea,this.drawPolylineMeasuelong)
+    this.createView(this.drawPolygonMeasueArea,
+                    this.drawPolylineMeasuelong)
   },
   methods: {
     createView (drawPolygonMeasueArea,drawPolylineMeasuelong) {
@@ -188,8 +189,8 @@ export default {
             case "litter" :selfzoom.zoomOut();break;
             case "allmap" :view.goTo(extent);break;
             case "long" : view.graphics.removeAll();
-                          // var drawL = new Draw({view: view});
-                          //     drawPolylineMeasuelong(drawL,view,'long');
+                          var drawL = new Draw({view: view});
+                              drawPolylineMeasuelong(drawL,view,'long');
                           break;
             case "area" : view.graphics.removeAll();
                           var draw = new Draw({view: view});
@@ -276,7 +277,7 @@ export default {
               color: [255, 110, 180, 0.6],
               style: "solid",
               outline: { // 自动为SimpleLineSymbol
-                color: '#EEAD0E',
+                color: [4, 90, 141],
                 width: 2
               }
             }
@@ -311,10 +312,11 @@ export default {
       // 引入依赖
       esriLoader.loadModules([
         "esri/Graphic",
+        "esri/geometry/Point",
         "esri/geometry/Polyline",
         "esri/geometry/geometryEngine",
-      ]).then(([Graphic,Polyline,geometryEngine]) => {
-        var action = draw.create("Polyline",
+      ]).then(([Graphic,Point,Polyline,geometryEngine]) => {
+        var action = draw.create("polyline",
         {mode: "click"}
         );
         view.focus();
@@ -323,10 +325,64 @@ export default {
         action.on("vertex-remove", drawPolyline);
         action.on("draw-complete", drawPolyline);
         function drawPolyline(event) {
-
+          //删除现有图形
+          view.graphics.removeAll();
+          //创建一个新的折线
+          var polyline = new Polyline( {
+            type: "polyline", // 自动的多段线
+            paths: event.vertices,
+            spatialReference: view.spatialReference
+          });
+          //将创建的折线放在绘图层
+          var graphic = new Graphic({
+            geometry: polyline,
+            symbol: {
+              type: "simple-line", // 自动为SimpleLineSymbol
+              color: [4, 90, 141],
+              width: 2,
+              cap: "round",
+              join: "round"
+            }
+          });
+          view.graphics.add(graphic);
+          //计算折线的长度
+          var long = geometryEngine.geodesicLength(polyline, "miles");
+          if (long < 0) {
+            //如果需要，简化多边形并再次计算面积
+            var simplifiedPolygon = geometryEngine.simplify(polygon);
+            if (simplifiedPolygon) {
+              long = geometryEngine.geodesicLength(simplifiedPolygon, "miles");
+            }
+          };
+          //开始显示折线的面积
+          labelAreas(polyline, long);
         };
-
-
+        //用它的面积标记polyon
+        function labelAreas(geom, long) {
+          var print = new Point({
+            type:"point",
+            longitude: geom.paths[0][0][0],
+            latitude: geom.paths[0][0][1]
+          });
+          var graphic = new Graphic({
+            geometry: print,
+            symbol: {
+              type: "text",
+              color: "white",
+              haloColor: "black",
+              haloSize: "1px",
+              text: long.toFixed(2) + "米",
+              xoffset: 3,
+              yoffset: 3,
+              font: { 
+                size: 14,
+                family: "sans-serif"
+              }
+            }
+          });
+          console.log(graphic);
+          view.graphics.add(graphic);
+        }
       })
     },
     //这是组件切换组件
