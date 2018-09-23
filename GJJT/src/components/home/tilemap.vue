@@ -183,18 +183,17 @@ export default {
         })
         //监听功能按钮列表，获取功能事件
         document.getElementById('toolsList').onclick = function(even){
+          var draw = new Draw({view: view});
           // console.log(even);
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
             case "allmap" :view.goTo(extent);break;
             case "long" : view.graphics.removeAll();
-                          var drawL = new Draw({view: view});
-                              drawPolylineMeasuelong(drawL,view,'long');
+                            drawPolylineMeasuelong(draw,view,'long');
                           break;
             case "area" : view.graphics.removeAll();
-                          var draw = new Draw({view: view});
-                              drawPolygonMeasueArea(draw,view,'area');
+                            drawPolygonMeasueArea(draw,view,'area');
                           break;
             case "remove" :view.graphics.removeAll();break;
           }
@@ -346,12 +345,12 @@ export default {
           });
           view.graphics.add(graphic);
           //计算折线的长度
-          var long = geometryEngine.geodesicLength(polyline, "miles");
+          var long = geometryEngine.geodesicLength(polyline, "meters");
           if (long < 0) {
             //如果需要，简化多边形并再次计算面积
             var simplifiedPolygon = geometryEngine.simplify(polygon);
             if (simplifiedPolygon) {
-              long = geometryEngine.geodesicLength(simplifiedPolygon, "miles");
+              long = geometryEngine.geodesicLength(simplifiedPolygon, "meters");
             }
           };
           //开始显示折线的面积
@@ -368,7 +367,7 @@ export default {
             geometry: print,
             symbol: {
               type: "text",
-              color: "white",
+              color: "black",
               haloColor: "black",
               haloSize: "1px",
               text: long.toFixed(2) + "米",
@@ -380,7 +379,6 @@ export default {
               }
             }
           });
-          console.log(graphic);
           view.graphics.add(graphic);
         }
       })

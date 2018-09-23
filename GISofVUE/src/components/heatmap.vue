@@ -7,7 +7,7 @@
 <script>
 import * as esriLoader from 'esri-loader'
 export default {
-  name: 'MultiLineLabels',
+  name: 'hotmap',
   data () {
     return {
     }
@@ -18,13 +18,13 @@ export default {
   methods: {
     createMap () {
       //这是esri-loader选项配置，本处是配置dojoconfig
-      const options = {
-        dojoConfig:{
-          has:{
-            "esri-featurelayer-webgl": 1
-          }
-        }
-      };
+      // const options = {
+      //   dojoConfig:{
+      //     has:{
+      //       "esri-featurelayer-webgl": 1
+      //     }
+      //   }
+      // };
       // 引入依赖
       esriLoader.loadModules([
         "esri/Map",
@@ -36,10 +36,6 @@ export default {
       ]).then(([Map, CSVLayer,MapView,esriConfig,Legend]) => {
         const url ="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.csv";
         esriConfig.request.corsEnabledServers.push(url);
-        const template = {
-          title: "{place}",
-          content: "Magnitude {mag} {type} hit {place} on {time}."
-        };
 
         const renderer = {
           type: "heatmap",
@@ -104,7 +100,6 @@ export default {
           url: url,
           title: "Magnitude 2.5+ earthquakes from the last week",
           copyright: "USGS Earthquakes",
-          popupTemplate: template,
           renderer: renderer
         });
 
@@ -119,10 +114,6 @@ export default {
           zoom: 3,
           map: map
         });
-
-        view.ui.add(new Legend({
-          view: view
-        }), "bottom-left");
 
       })
     }

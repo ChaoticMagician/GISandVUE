@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Index from '@/components/Index'
+import Indexru from '@/components/Index'
 
 import firstMap from '@/components/firstMap'
 import basemap from '@/components/basemap'
@@ -18,8 +18,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Index',
-      component: Index,
+      component: Indexru,
       children: [
         {
           path: '/',
