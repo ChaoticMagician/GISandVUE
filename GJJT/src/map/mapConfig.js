@@ -518,6 +518,68 @@ export function arcgisConfig () {
         opacity: 1,
         visible: false
       },
-    ]
+    ],
+    /**
+     * 这里是热力图的渲染配置
+     * 用于渲染热力图
+     */
+    renderer : {
+      type: "heatmap",
+      colorStops: [
+      {
+        color: "rgba(63, 40, 102, 0)",
+        ratio: 0
+      },
+      {
+        color: "#472b77",
+        ratio: 0.083
+      },
+      {
+        color: "#4e2d87",
+        ratio: 0.166
+      },
+      {
+        color: "#563098",
+        ratio: 0.249
+      },
+      {
+        color: "#5d32a8",
+        ratio: 0.332
+      },
+      {
+        color: "#6735be",
+        ratio: 0.415
+      },
+      {
+        color: "#7139d4",
+        ratio: 0.498
+      },
+      {
+        color: "#7b3ce9",
+        ratio: 0.581
+      },
+      {
+        color: "#853fff",
+        ratio: 0.664
+      },
+      {
+        color: "#a46fbf",
+        ratio: 0.747
+      },
+      {
+        color: "#c29f80",
+        ratio: 0.830
+      },
+      {
+        color: "#e0cf40",
+        ratio: 0.913
+      },
+      {
+        color: "#ffff00",
+        ratio: 1
+      }],
+      maxPixelIntensity: 25,
+      minPixelIntensity: 0
+    }
   };
 }
