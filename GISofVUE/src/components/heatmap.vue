@@ -97,9 +97,9 @@ export default {
         };
 
         const layer = new CSVLayer({
-          url: url,
-          title: "Magnitude 2.5+ earthquakes from the last week",
-          copyright: "USGS Earthquakes",
+          url: url,        
+            title: "Magnitude 2.5+ earthquakes from the last week",
+            copyright: "USGS Earthquakes",
           renderer: renderer
         });
 

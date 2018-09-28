@@ -23,10 +23,31 @@ export default {
       // 引入依赖
       esriLoader.loadModules([
         'esri/Map',
-        'esri/views/MapView'
-      ]).then(([EsriMap, MapView]) => {
+        'esri/views/MapView',
+        "esri/layers/FeatureLayer",
+      ]).then(([EsriMap,MapView,FeatureLayer]) => {
+
+        var citiesRenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+            size: 10,
+            color: "#FF4000",
+            outline: { // autocasts as new SimpleLineSymbol()
+              color: [255, 64, 0, 0.4], // autocasts as new Color()
+              width: 7
+            }
+          }
+        };
+
+
+
+
+
+
         this.map = new EsriMap({
-          basemap: 'streets'
+          basemap: 'streets',
+          layers:   []
         })
         this.view = new MapView({
           container: 'viewDiv',
