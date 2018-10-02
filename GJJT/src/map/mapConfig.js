@@ -1,6 +1,12 @@
 /*
 arcgis初始化配置
 */
+//添加gerjson的数据依赖
+import {print} from "@/map/print.js"
+import {line} from "@/map/line.js"
+import {surface} from "@/map/surface.js"
+
+
 export function arcgisConfig () {
   window.arcgis = {
     config: {
@@ -470,6 +476,7 @@ export function arcgisConfig () {
     /***
      * layersList中type的能值map-image | wms-layer
      * 是图层的类型,暂时只支持imagery和WMS类型，
+     * 20181003添加geojson的图层加载方式，类型分别为geojsondata和geojsonurl
      * 
      * 
     
@@ -516,6 +523,36 @@ export function arcgisConfig () {
         },
         type:'wms',
         Version:'1.1.0',
+        opacity: 1,
+        visible: false
+      },
+      {
+        id:'geojsonprint',
+        title:'门址GeoJsonD版',
+        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        data: print,
+        type:'geojsondata',
+        Version:'1.0.0',
+        opacity: 1,
+        visible: false
+      },
+      {
+        id:'geojsonline',
+        title:'道路GeoJsonD版',
+        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        data: line,
+        type:'geojsondata',
+        Version:'1.0.0',
+        opacity: 1,
+        visible: false
+      },
+      {
+        id:'geojsonsurface',
+        title:'覆盖面GeoJsonD版',
+        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        data: surface,
+        type:'geojsondata',
+        Version:'1.0.0',
         opacity: 1,
         visible: false
       },
@@ -581,6 +618,21 @@ export function arcgisConfig () {
       }],
       maxPixelIntensity: 25,
       minPixelIntensity: 0
+    },
+    /**
+     * 这是图层的渲染样式
+     */
+    quakesRenderer : {
+      type: "simple", 
+      symbol: {
+              type: "simple-marker",  
+              size: 6,
+              color: "black",
+              outline: {  
+              width: 0.5,
+              color: "white"
+              }
+      },
     }
   };
 }
