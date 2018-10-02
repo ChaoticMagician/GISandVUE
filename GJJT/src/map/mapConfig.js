@@ -7,6 +7,7 @@ export function arcgisConfig () {
       proxyUrl: 'http://123.56.17.204:8091/4.8/init.js',
       baseUrl:  'http://123.56.17.204:8091/4.8/init.js',
       dojoUrl:  'http://123.56.17.204:8091/4.8/library/4.7/dojo',
+      selfJsUrl:  'http://123.56.17.204:8091/selftooljs/',
       wkid: 4326,
       getBaseUrl: function () {
         return this.baseUrl

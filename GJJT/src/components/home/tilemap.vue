@@ -74,12 +74,21 @@ export default {
         "esri/config",
         "esri/views/2d/draw/Draw",
 
+        //个人工具组件封装的jd
+
+        "/static/Toolsjs/test.js",
+
         "esri/views/MapView",
         "esri/geometry/Extent",
         "esri/widgets/Zoom",
         "dojo/domReady!"
       ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,WMSLayer,esriConfig,Draw,
+        test,
         MapView,Extent,Zoom]) => {
+          console.log(test);
+          console.log(test.testvar);
+          test.testfunction("哈哈哈，想不到吧，来呀！！");
+
         //加载所有的WebTileLayer图层
         let onThisBaseLayers = window.arcgis.baseLayers;
         let webTileLayerObjArr = {};
