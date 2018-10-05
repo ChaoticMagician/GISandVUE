@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style>
-@import url('http://123.56.17.204:8091/4.8/esri/css/main.css');
+@import url('http://123.56.17.204:8091/4.9/esri/css/main.css');
 #app{
   height: 100%;
   margin: 0;

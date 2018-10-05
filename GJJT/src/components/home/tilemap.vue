@@ -59,22 +59,23 @@ export default {
         "esri/Map",
         "esri/Basemap",
         "esri/layers/WebTileLayer",
-        "esri/geometry/SpatialReference",
         "esri/layers/MapImageLayer",
         "esri/layers/WMSLayer",
+        'esri/request',
         "esri/config",
-        "esri/views/2d/draw/Draw",
-
+        
         //个人工具组件封装的jd
         "/static/Toolsjs/measureTools.js",
-
+        "/static/Toolsjs/geojsonDataToFeatureLayer.js",
+        
+        "esri/views/2d/draw/Draw",
         "esri/views/MapView",
         "esri/geometry/Extent",
         "esri/widgets/Zoom",
         "dojo/domReady!"
-      ]).then(([Map,Basemap,WebTileLayer,SpatialReference,MapImageLayer,WMSLayer,esriConfig,Draw,
-        measureTools,
-        MapView,Extent,Zoom]) => {
+      ]).then(([Map,Basemap,WebTileLayer,MapImageLayer,WMSLayer,esriRequest,esriConfig,
+        measureTools,geojsonDataToFeatureLayer,
+        Draw,MapView,Extent,Zoom]) => {
 
         //加载所有的WebTileLayer图层
         let onThisBaseLayers = window.arcgis.baseLayers;
@@ -131,6 +132,29 @@ export default {
               visible: tram.visible
             });
             layersArr.push(WMSLayerlayer1);
+          }else if(tram.type == "geojsonURL"){
+            /**用goeserver的geojson服务创建featureLayer图层，并用热力图渲染器渲染*/
+            //外层用异步方法获取geojson服务的数据
+            esriRequest(tram.url, { responseType: "json" })
+            .then((response) => {
+              //用个人封装的方法将geojson数据转换为graphics的集合
+              var Graphics = geojsonDataToFeatureLayer.geojsonDataToGraphics(response.data);
+              //用个人封装的方法将graphics的集合转换为featureLayer图层，并添加渲染器
+              //PS：如果为点线面图层，具有默认的渲染器；方法传参如下：
+              // function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,renderjson){}
+              var learyreturn = geojsonDataToFeatureLayer.GraphicsToFeatureLayer(
+                Graphics,
+                tram.id,
+                tram.title,
+                tram.opacity,
+                tram.visible,
+                tram.renderer,
+              );
+              map.add(learyreturn);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
           }
         });
         

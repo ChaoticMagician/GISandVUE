@@ -2,18 +2,17 @@
 arcgis初始化配置
 */
 //添加gerjson的数据依赖
-import {print} from "@/map/print.js"
-import {line} from "@/map/line.js"
-import {surface} from "@/map/surface.js"
+// import {print} from "@/map/print.js"
+// import {line} from "@/map/line.js"
+// import {surface} from "@/map/surface.js"
 
 
 export function arcgisConfig () {
   window.arcgis = {
     config: {
-      proxyUrl: 'http://123.56.17.204:8091/4.8/init.js',
-      baseUrl:  'http://123.56.17.204:8091/4.8/init.js',
+      proxyUrl: 'http://js.arcgis.com/4.9/init.js',
+      baseUrl: 'http://123.56.17.204:8091/4.9/init.js',
       dojoUrl:  'http://123.56.17.204:8091/4.8/library/4.7/dojo',
-      selfJsUrl:  'http://123.56.17.204:8091/selftooljs/',
       wkid: 4326,
       getBaseUrl: function () {
         return this.baseUrl
@@ -476,7 +475,7 @@ export function arcgisConfig () {
     /***
      * layersList中type的能值map-image | wms-layer
      * 是图层的类型,暂时只支持imagery和WMS类型，
-     * 20181003添加geojson的图层加载方式，类型分别为geojsondata和geojsonurl
+     * 20181003添加geojson的图层加载方式，类型为geojsonURL
      * 
      * 
     
@@ -528,111 +527,102 @@ export function arcgisConfig () {
       },
       {
         id:'geojsonprint',
-        title:'门址GeoJsonD版',
-        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
-        data: print,
-        type:'geojsondata',
+        title:'门址热力图',
+        url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
+        type:'geojsonURL',
         Version:'1.0.0',
         opacity: 1,
-        visible: false
-      },
-      {
-        id:'geojsonline',
-        title:'道路GeoJsonD版',
-        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
-        data: line,
-        type:'geojsondata',
-        Version:'1.0.0',
-        opacity: 1,
-        visible: false
-      },
-      {
-        id:'geojsonsurface',
-        title:'覆盖面GeoJsonD版',
-        // url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
-        data: surface,
-        type:'geojsondata',
-        Version:'1.0.0',
-        opacity: 1,
-        visible: false
+        visible: false,
+        renderer:{
+          type: "heatmap",
+          colorStops: [
+            { color: "rgba(63, 40, 102, 0)", ratio: 0 },
+            { color: "#472b77", ratio: 0.083 },
+            { color: "#4e2d87", ratio: 0.166 },
+            { color: "#563098", ratio: 0.249 },
+            { color: "#5d32a8", ratio: 0.332 },
+            { color: "#6735be", ratio: 0.415 },
+            { color: "#7139d4", ratio: 0.498 },
+            { color: "#7b3ce9", ratio: 0.581 },
+            { color: "#853fff", ratio: 0.664 },
+            { color: "#a46fbf", ratio: 0.747 },
+            { color: "#c29f80", ratio: 0.830 },
+            { color: "#e0cf40", ratio: 0.913 },
+            { color: "#ffff00", ratio: 1 }
+          ],
+          maxPixelIntensity: 25,
+          minPixelIntensity: 0
+        }
       },
     ],
+
+  };
+};
+export function RendererConfig () {
+  /**
+   * 这是图层的渲染样式
+   */
+  window.Renderer = {
+    point:{
+      type: "simple", 
+      symbol: {
+        type: "simple-marker",  
+        size: 6,
+        color: "black",
+        outline: {  
+          width: 0.5,
+          color: "white"
+        }
+      }
+    },
+    polyline:{
+      type: "simple", 
+      symbol: {
+        type: "simple-line",  
+        size: 6,
+        color: "black",
+        outline: {  
+          width: 0.5,
+          color: "white"
+        }
+      }
+    },
+    polygon:{
+      type: "simple", 
+      symbol: {
+        type: "simple-fill",  
+        size: 6,
+        color: "black",
+        outline: {  
+          width: 0.5,
+          color: "white"
+        }
+      }
+    },
     /**
      * 这里是热力图的渲染配置
      * 用于渲染热力图
      */
-    renderer : {
+    heatmap : {
       type: "heatmap",
       colorStops: [
-      {
-        color: "rgba(63, 40, 102, 0)",
-        ratio: 0
-      },
-      {
-        color: "#472b77",
-        ratio: 0.083
-      },
-      {
-        color: "#4e2d87",
-        ratio: 0.166
-      },
-      {
-        color: "#563098",
-        ratio: 0.249
-      },
-      {
-        color: "#5d32a8",
-        ratio: 0.332
-      },
-      {
-        color: "#6735be",
-        ratio: 0.415
-      },
-      {
-        color: "#7139d4",
-        ratio: 0.498
-      },
-      {
-        color: "#7b3ce9",
-        ratio: 0.581
-      },
-      {
-        color: "#853fff",
-        ratio: 0.664
-      },
-      {
-        color: "#a46fbf",
-        ratio: 0.747
-      },
-      {
-        color: "#c29f80",
-        ratio: 0.830
-      },
-      {
-        color: "#e0cf40",
-        ratio: 0.913
-      },
-      {
-        color: "#ffff00",
-        ratio: 1
-      }],
+        { color: "rgba(63, 40, 102, 0)", ratio: 0 },
+        { color: "#472b77", ratio: 0.083 },
+        { color: "#4e2d87", ratio: 0.166 },
+        { color: "#563098", ratio: 0.249 },
+        { color: "#5d32a8", ratio: 0.332 },
+        { color: "#6735be", ratio: 0.415 },
+        { color: "#7139d4", ratio: 0.498 },
+        { color: "#7b3ce9", ratio: 0.581 },
+        { color: "#853fff", ratio: 0.664 },
+        { color: "#a46fbf", ratio: 0.747 },
+        { color: "#c29f80", ratio: 0.830 },
+        { color: "#e0cf40", ratio: 0.913 },
+        { color: "#ffff00", ratio: 1 }
+      ],
       maxPixelIntensity: 25,
       minPixelIntensity: 0
-    },
-    /**
-     * 这是图层的渲染样式
-     */
-    quakesRenderer : {
-      type: "simple", 
-      symbol: {
-              type: "simple-marker",  
-              size: 6,
-              color: "black",
-              outline: {  
-              width: 0.5,
-              color: "white"
-              }
-      },
     }
-  };
+
+  }
 }
