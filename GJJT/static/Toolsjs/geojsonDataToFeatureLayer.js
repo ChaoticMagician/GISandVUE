@@ -47,6 +47,7 @@ define([
     function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,renderjson){
         //创建字段类型对照表
         let fields = _getfields(Graphics);
+        let popupTemplate =_getpopufields(fields)
         //在renderjson参数为空的情况下，创建图层的默认渲染器，其实就是样式,
         let allRenderer ={
             point:{
@@ -84,15 +85,16 @@ define([
         let thisrenderer = renderjson||quakesRenderer;
 
         let layer = new FeatureLayer({
-            id:id,
-            title:title,
-            opacity:opacity,
-            visible:visible,
+            id,
+            title,
+            opacity,
+            visible,
             geometryType: Graphics[0].geometry.type,
             source: Graphics,
             fields,
             objectIdField: "OBJECTID",
-            renderer: thisrenderer
+            renderer: thisrenderer,
+            popupTemplate
         });
         return layer;
     };
@@ -109,5 +111,18 @@ define([
             }
         };
         return fields;
+    };
+    //创建弹窗字段
+    function _getpopufields(fields){
+        //创建字段类型对照表
+        let fieldInfos = fields.map(field=>{return {fieldName:field.name,label:field.name,visible:true}});
+        let popufields = {
+            title:"属性弹窗",
+            content:[{
+                type:"fields",
+                fieldInfos
+            }],
+        };
+        return popufields;
     }
 });
