@@ -124,6 +124,7 @@ export default {
               id: tram.id,
               title: tram.title,
               url: tram.url,
+              featureInfoUrl: tram.featureInfoUrl,
               sublayers: [{
                 name: tram.sublayers.name
               }],

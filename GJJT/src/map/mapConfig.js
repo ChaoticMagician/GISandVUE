@@ -296,6 +296,7 @@ export function arcgisConfig () {
         id:'fgm',
         title:'楼宇覆盖面',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:FGM&outputFormat=application%2Fjson",
         sublayers:{
           name: "FGM"
         },
@@ -308,6 +309,7 @@ export function arcgisConfig () {
         id:'mz',
         title:'小王庄门址',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson",
         sublayers:{
           name: "MZ"
         },
@@ -320,6 +322,7 @@ export function arcgisConfig () {
         id:'dl',
         title:'小王庄道路',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
+        featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:DL&outputFormat=application%2Fjson",
         sublayers:{
           name: "DL"
         },

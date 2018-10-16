@@ -6,7 +6,8 @@ define([
 ], function(FeatureLayer, Point,Polyline,Polygon) {
     return {
         geojsonDataToGraphics,
-        GraphicsToFeatureLayer
+        GraphicsToFeatureLayer,
+        geojsonDataToFeature
     };
     
     //创建geojson转成graphic集合，依据不同的要素类型创建不同的要素graphic；
@@ -65,6 +66,23 @@ define([
         });
         return layer;
     };
+    //将graphic集合转成FeatureLayer，主要做为属性图层
+    function geojsonDataToFeature(geojsonData,id){
+        //用geojsonData创建Graphics
+        let Graphics = geojsonDataToGraphics(geojsonData);
+        //创建字段类型对照表
+        let fields = _getfields(Graphics);
+        let popupTemplate =_getpopufields(fields)
+        let layer = new FeatureLayer({
+            id,
+            geometryType: Graphics[0].geometry.type,
+            source: Graphics,
+            fields,
+            objectIdField: "OBJECTID",
+            popupTemplate
+        });
+        return layer;
+    };
     //创建字段类型对照表
     function _getfields(Graphics){
         let fields = [];
@@ -83,7 +101,7 @@ define([
     function _getpopufields(fields){
         let fieldInfos = fields.map(field=>{return {fieldName:field.name,label:field.name,visible:true}});
         let popufields = {
-            title:"属性弹窗",
+            title:"{"+fieldInfos[3].fieldName+"}-{"+fieldInfos[4].fieldName+"}",
             content:[{
                 type:"fields",
                 fieldInfos
