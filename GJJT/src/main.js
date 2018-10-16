@@ -9,7 +9,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import esriLoader from 'esri-loader'
-import { arcgisConfig,RendererConfig } from '@/map/mapConfig.js'
+import { arcgisConfig } from '@/map/mapConfig.js'
 
 import store from './store'
 

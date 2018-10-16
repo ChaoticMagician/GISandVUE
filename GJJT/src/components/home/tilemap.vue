@@ -175,7 +175,7 @@ export default {
         view.constraints = {
           maxZoom: 16,
           minZoom: 6, 
-          rotationEnabled: false  // Disables map rotation
+          rotationEnabled: false  
         };
         //设置初始显示范围
         var extent = new Extent({

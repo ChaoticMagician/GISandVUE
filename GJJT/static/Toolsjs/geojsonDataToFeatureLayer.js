@@ -48,7 +48,51 @@ define([
         //创建字段类型对照表
         let fields = _getfields(Graphics);
         let popupTemplate =_getpopufields(fields)
-        //在renderjson参数为空的情况下，创建图层的默认渲染器，其实就是样式,
+        //在renderjson参数为空的情况下，用模块内的默认渲染器
+        let thisrenderer = renderjson||_getRenderer(Graphics[0].geometry.type);
+
+        let layer = new FeatureLayer({
+            id,
+            title,
+            opacity,
+            visible,
+            geometryType: Graphics[0].geometry.type,
+            source: Graphics,
+            fields,
+            objectIdField: "OBJECTID",
+            renderer: thisrenderer,
+            popupTemplate
+        });
+        return layer;
+    };
+    //创建字段类型对照表
+    function _getfields(Graphics){
+        let fields = [];
+        for (const key in Graphics[0].attributes) {
+            if (Graphics[0].attributes.hasOwnProperty(key) === true ) {
+                if(key ==="OBJECTID"){
+                    fields.push({name: key,alias: key,type: "oid"})
+                }else{
+                    fields.push({name: key,alias: key,type: "string"})
+                }
+            }
+        };
+        return fields;
+    };
+    //创建弹窗字段
+    function _getpopufields(fields){
+        let fieldInfos = fields.map(field=>{return {fieldName:field.name,label:field.name,visible:true}});
+        let popufields = {
+            title:"属性弹窗",
+            content:[{
+                type:"fields",
+                fieldInfos
+            }],
+        };
+        return popufields;
+    };
+    //返回默认渲染器
+    function _getRenderer(geometryType){
         let allRenderer ={
             point:{
                 type: "simple", 
@@ -81,48 +125,6 @@ define([
                 }
             },
         }
-        let quakesRenderer = allRenderer[Graphics[0].geometry.type] ;
-        let thisrenderer = renderjson||quakesRenderer;
-
-        let layer = new FeatureLayer({
-            id,
-            title,
-            opacity,
-            visible,
-            geometryType: Graphics[0].geometry.type,
-            source: Graphics,
-            fields,
-            objectIdField: "OBJECTID",
-            renderer: thisrenderer,
-            popupTemplate
-        });
-        return layer;
-    };
-            //创建字段类型对照表
-    function _getfields(Graphics){
-        let fields = [];
-        for (const key in Graphics[0].attributes) {
-            if (Graphics[0].attributes.hasOwnProperty(key) === true ) {
-                if(key ==="OBJECTID"){
-                    fields.push({name: key,alias: key,type: "oid"})
-                }else{
-                    fields.push({name: key,alias: key,type: "string"})
-                }
-            }
-        };
-        return fields;
-    };
-    //创建弹窗字段
-    function _getpopufields(fields){
-        //创建字段类型对照表
-        let fieldInfos = fields.map(field=>{return {fieldName:field.name,label:field.name,visible:true}});
-        let popufields = {
-            title:"属性弹窗",
-            content:[{
-                type:"fields",
-                fieldInfos
-            }],
-        };
-        return popufields;
+        return allRenderer[geometryType] ;
     }
 });
