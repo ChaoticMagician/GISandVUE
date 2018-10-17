@@ -48,7 +48,7 @@ define([
     function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,renderjson){
         //创建字段类型对照表
         let fields = _getfields(Graphics);
-        let popupTemplate =_getpopufields(fields)
+        // let popupTemplate =_getpopufields(fields)
         //在renderjson参数为空的情况下，用模块内的默认渲染器
         let thisrenderer = renderjson||_getRenderer(Graphics[0].geometry.type);
 
@@ -62,17 +62,17 @@ define([
             fields,
             objectIdField: "OBJECTID",
             renderer: thisrenderer,
-            popupTemplate
+            // popupTemplate
         });
         return layer;
     };
     //将graphic集合转成FeatureLayer，主要做为属性图层
-    function geojsonDataToFeature(geojsonData,id){
+    function geojsonDataToFeature(geojsonData,id,titleField){
         //用geojsonData创建Graphics
         let Graphics = geojsonDataToGraphics(geojsonData);
         //创建字段类型对照表
         let fields = _getfields(Graphics);
-        let popupTemplate =_getpopufields(fields)
+        let popupTemplate =_getpopufields(fields,titleField)
         let layer = new FeatureLayer({
             id,
             geometryType: Graphics[0].geometry.type,
@@ -90,7 +90,10 @@ define([
             if (Graphics[0].attributes.hasOwnProperty(key) === true ) {
                 if(key ==="OBJECTID"){
                     fields.push({name: key,alias: key,type: "oid"})
-                }else{
+                }else if(typeof(Graphics[0].attributes[key])==="number"){
+                    fields.push({name: key,alias: key,type: "double"})
+                }
+                else{
                     fields.push({name: key,alias: key,type: "string"})
                 }
             }
@@ -98,10 +101,10 @@ define([
         return fields;
     };
     //创建弹窗字段
-    function _getpopufields(fields){
+    function _getpopufields(fields,titleField=fields[1].name){
         let fieldInfos = fields.map(field=>{return {fieldName:field.name,label:field.name,visible:true}});
         let popufields = {
-            title:"{"+fieldInfos[3].fieldName+"}-{"+fieldInfos[4].fieldName+"}",
+            title:"{"+titleField+"}信息",
             content:[{
                 type:"fields",
                 fieldInfos

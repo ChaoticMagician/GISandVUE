@@ -125,6 +125,7 @@ export default {
               title: tram.title,
               url: tram.url,
               featureInfoUrl: tram.featureInfoUrl,
+              featureInfoField:tram.featureInfoField,
               sublayers: [{
                 name: tram.sublayers.name
               }],
@@ -240,9 +241,23 @@ export default {
     chancelayers(chancedlayerid){
       // 引入依赖
       esriLoader.loadModules([
-      ]).then(([]) => {
+        'esri/request',
+        "/static/Toolsjs/geojsonDataToFeatureLayer.js",
+      ]).then(([esriRequest,geojsonDataToFeatureLayer]) => {
         let chancedlayerobj = this.thismap.findLayerById(chancedlayerid);
         chancedlayerobj.visible = !chancedlayerobj.visible;
+        //添加弹窗用的featurelayer图层；
+        if(chancedlayerobj.visible&&chancedlayerobj.type!="feature"){
+          console.log(chancedlayerobj);
+          esriRequest(chancedlayerobj.featureInfoUrl, { responseType: "json" })
+          .then((response) => {
+            let proplayer = geojsonDataToFeatureLayer.geojsonDataToFeature(response.data,chancedlayerobj.id+"fea",chancedlayerobj.featureInfoField);
+            this.thismap.add(proplayer);
+          })
+        }else{
+          let proplayer = this.thismap.findLayerById(chancedlayerobj.id+"fea");
+          this.thismap.remove(proplayer);
+        }
       })
     },
     //这是组件切换组件

@@ -297,6 +297,7 @@ export function arcgisConfig () {
         title:'楼宇覆盖面',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
         featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:FGM&outputFormat=application%2Fjson",
+        featureInfoField:'AddName',
         sublayers:{
           name: "FGM"
         },
@@ -310,6 +311,7 @@ export function arcgisConfig () {
         title:'小王庄门址',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
         featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson",
+        featureInfoField:'Name',
         sublayers:{
           name: "MZ"
         },
@@ -323,6 +325,7 @@ export function arcgisConfig () {
         title:'小王庄道路',
         url: "http://123.56.17.204:8081/geoserver/selfmap/wms",
         featureInfoUrl:"http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:DL&outputFormat=application%2Fjson",
+        featureInfoField:'YSMC',
         sublayers:{
           name: "DL"
         },
@@ -341,6 +344,24 @@ export function arcgisConfig () {
         visible: false,
         renderer:Renderer.heatmap
       },
+      // {
+      //   id:'geojsonline',
+      //   title:'道路json',
+      //   url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:DL&outputFormat=application%2Fjson',
+      //   type:'geojsonURL',
+      //   Version:'1.0.0',
+      //   opacity: 1,
+      //   visible: false
+      // },
+      // {
+      //   id:'geojsonare',
+      //   title:'楼房json',
+      //   url: "http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:FGM&outputFormat=application%2Fjson",
+      //   type:'geojsonURL',
+      //   Version:'1.0.0',
+      //   opacity: 1,
+      //   visible: false
+      // },
     ],
 
   };
