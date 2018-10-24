@@ -1,6 +1,5 @@
 <template>
     <div>
-      <p><button @click="thischance()">改变</button></p>
         <arcgismap :style="{height:thisheight}"
          style=" border: 1px solid #eee"
          :this-base-map='thisBaseMap'
@@ -45,8 +44,6 @@ export default {
           basemap: "streets"
         });
         this.thisBaseMap = map1;
-
-        console.log(map1);
       })
     },
     createMap2 () {
@@ -61,12 +58,10 @@ export default {
           basemap: "dark-gray"
         });
         this.thisBaseMap = map2;
-        console.log(map2);
       })
     },
     thischance(){
       this.createMap2();
-      console.log(this.thisBaseMap);
       this.$refs.chancemap.createView()
     }
   }

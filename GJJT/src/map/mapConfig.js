@@ -63,7 +63,7 @@ let Renderer = {
     minPixelIntensity: 0
   }
 };
-//
+//底图的配置文件
 let tileInfo = {
   dpi: 90.71428571427429,
   rows: 256,

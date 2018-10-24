@@ -4,7 +4,7 @@
     class="Layer-list-li"
     v-for="trem in listdata"
     :key="trem.id"
-    @click="[chanceBasemap(trem.id),trem.visible=!trem.visible]"
+    @click="[chanceLayerid(trem.id,!trem.visible),trem.visible=!trem.visible]"
     >
       <i :class="['toolsLIstIcon','iconfont',trem.visible? 'icon-ditu':'icon-fangda']" />
       <span class="Layer-list-li-span">{{trem.title}}</span>
@@ -21,8 +21,8 @@ export default {
     }
   },
   methods:{
-      chanceBasemap(chancedlayerid){
-        this.$emit('chance-layers-even',chancedlayerid)
+      chanceLayerid(chancedlayerid,visible){
+        this.$emit('chance-layers-even',chancedlayerid,visible)
       }
   }
 }

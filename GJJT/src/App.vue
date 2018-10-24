@@ -16,4 +16,14 @@ export default {
   height: 100%;
   width: 100%;
 }
+
+/* 该区域是全局修改element组件样式的区域 */
+
+/* 当前是修改tilemap组件中的图层属性弹窗 */
+.quirePanel .el-card__header{
+  padding: 8px 20px;
+}
+.quirePanel .el-card__body{
+  padding: 5px 10px;
+}
 </style>
