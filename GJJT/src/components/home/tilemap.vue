@@ -1,17 +1,18 @@
 <template>
   <div class="eleMap" style="height: 100%;">
     <div id="viewDiv"></div>
-    <!-- <el-row type='flex' id='toolsList'> -->
+      <!-- 这是地图功能 -->
       <div id='toolsList'  >
-        <div class="toolsListDiv" id="biger"><i class="toolsLIstIcon iconfont icon-fangda"></i>放大</div>
-        <div class="toolsListDiv" id="litter"><i class="toolsLIstIcon iconfont icon-suoxiao1"></i>缩小</div>
-        <div class="toolsListDiv" id="allmap"><i class="toolsLIstIcon iconfont icon-fangda1"></i>全图</div>
-        <div class="toolsListDiv" id="query"><i class="toolsLIstIcon iconfont icon-ditu1"></i>查询</div>
-        <div class="toolsListDiv" id="long"><i class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
-        <div class="toolsListDiv" id="area"><i class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
-        <div class="toolsListDiv" id="legend"><i class="toolsLIstIcon iconfont icon-ditudaohang-"></i>图例</div>
-        <div class="toolsListDiv" id="remove"><i class="toolsLIstIcon iconfont icon-ditu"></i>清除</div>
+        <div class="toolsListDiv" id="biger"><i id="biger" class="toolsLIstIcon iconfont icon-fangda">放大</i></div>
+        <div class="toolsListDiv" id="litter"><i id="litter" class="toolsLIstIcon iconfont icon-suoxiao1"></i>缩小</div>
+        <div class="toolsListDiv" id="allmap"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>全图</div>
+        <div class="toolsListDiv" id="query"><i id="query" class="toolsLIstIcon iconfont icon-ditu1"></i>查询</div>
+        <div class="toolsListDiv" id="long"><i id="long" class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
+        <div class="toolsListDiv" id="area"><i id="area" class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
+        <div class="toolsListDiv" id="legend"><i id="legend" class="toolsLIstIcon iconfont icon-ditudaohang-"></i>图例</div>
+        <div class="toolsListDiv" id="remove"><i id="remove" class="toolsLIstIcon iconfont icon-ditu"></i>清除</div>
       </div>
+      <!-- 这是地图图层控制 -->
       <div id='layersList' @mouseleave.stop.self="chancelistcomponent(null,'baseMapList',$event)">
         <div @mouseenter.stop.self="chancelistcomponent(1,'baseMapList')" :class="['layersListDiv',whichListIs==1? 'layersListDivIs':'']" id='baseMapList' ><i class="workLIstIcon iconfont icon-fangda"></i>底图切换</div>
         <div @mouseenter.stop.self="chancelistcomponent(2,'layerList')" :class="['layersListDiv',whichListIs==2? 'layersListDivIs':'']" id="layerList"><i class="workLIstIcon iconfont icon-suoxiao1"></i>图层控制</div>
@@ -25,40 +26,15 @@
             class="layersListPopup"></component>
           </keep-alive>
       </div>
-      <el-card class="quirePanel" v-if="ifquire">
-        <div slot="header">
-          <span>要素查询</span>
-          <el-button
-          style="float: right; padding: 3px 0"
-          type="text"
-          @click="ifquire=false"
-          >X</el-button>
-        </div>
-        <el-dropdown >
-          <span class="layerquire">
-            {{whichLayerquery.title}}{{whichLayerquery.oldlayerid}}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown" class="Layer-list"  >
-            <el-dropdown-item
-            class="Layer-list-li"
-            v-for="trem in listdata"
-            :key="trem.id"
-            >
-            <span 
-              @click="[
-              //需要判断whichLayerquery.oldlayerid和trem.id是否是一个图层，减少冗余
-              //还有首次点击时whichLayerquery.oldlayerid为空的情况
-                chancelayers(whichLayerquery.oldlayerid,false),
-                chancelayers(trem.id,true),
-                trem.visible=true,
-                queryFLlist(thisview,trem.id,querywatch),
-                whichLayerquery= {title:trem.title,oldlayerid:trem.id}
-              ]"
-            >{{trem.title}}</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-card>
+      <!-- 这是要素图层查询 -->
+      <layer-query 
+        ref="layerQuery"
+        v-if="ifquire"
+        :thisview=thisview
+        :ifquire=ifquire
+        @chance-layers-even='chancelayers'
+        @chance-if-quire='ifquire=false'
+      ></layer-query>
   </div>
 </template>
 
@@ -67,10 +43,11 @@ import * as esriLoader from 'esri-loader'
 import baseMapList from '@/components/home/layersList/baseMapList'
 import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
+import layerQuery    from '@/components/home/layerQuery/layerQuery'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList
+    baseMapList,layerList,tameList,layerQuery
   },
   data () {
     return {
@@ -80,10 +57,7 @@ export default {
       layerListEvent:{},
       listcomponent:'baseMapList',
       whichListIs: null,
-      ifquire:true,
-      whichLayerquery:{title:'被查询图层',oldlayerid:""},
-      querywatch: {},
-      listdata: window.arcgis.layersList,
+      ifquire:false,
     }
   },
   mounted(){
@@ -248,7 +222,10 @@ export default {
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
             case "allmap" :view.goTo(extent);break;
-            case "query": vuem.ifquire=!vuem.ifquire;break;
+            case "query":{ if(vuem.ifquire){
+                            vuem.$refs.layerQuery.chanceIfQuire();
+                          }else{vuem.ifquire=true}
+                         };break;
             case "long" : view.graphics.removeAll();
                             measureTools.drawPolylineMeasuelong(draw,view,'long');
                           break;
@@ -303,28 +280,6 @@ export default {
       if(whichListEven){
         this.listcomponent = whichComponentEven;
       }
-    },
-    //这是属性列表反馈
-    queryFLlist(view,id,oldQuery){
-      if(oldQuery.remove){
-        oldQuery.remove()
-      }
-      let querywatch = view.watch("updating", function(value){
-        let faa = view.map.findLayerById(id+"fea")
-      if(!value&&faa){
-        console.log(view.map);
-        faa.queryFeatures({
-          geometry: view.extent,
-          returnGeometry: true
-        }).then(function(results){
-          console.log(results);
-          //返回图层查询列表
-        }).catch(function(error) {
-          console.error("query failed: ", error);
-        });
-      };
-      })
-      this.querywatch= querywatch;
     },
   }
 }

@@ -26,4 +26,13 @@ export default {
 .quirePanel .el-card__body{
   padding: 5px 10px;
 }
+.quireFLlist th{
+  padding: 13px 0;
+}
+.quireFLlist td{
+  padding: 4px 0;
+}
+.quireFLlist table{
+  width: 100%;
+}
 </style>
