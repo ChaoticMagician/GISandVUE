@@ -27,12 +27,16 @@ export default {
   padding: 5px 10px;
 }
 .quireFLlist th{
-  padding: 13px 0;
+  padding: 4px 0;
 }
 .quireFLlist td{
   padding: 4px 0;
 }
 .quireFLlist table{
   width: 100%;
+}
+.darwButtens .el-button{
+  padding: 7px;
+  /* font-size: 15px; */
 }
 </style>

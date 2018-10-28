@@ -1,12 +1,20 @@
 <template>
   <el-card class="quirePanel">
     <div slot="header">
-      <span>要素查询</span>
+      <span>框选查询</span>
         <el-button
         style="float: right; padding: 3px 0"
         type="text"
         @click="chanceIfQuire()"
         >X</el-button><br/>
+      <div class="darwButtens">
+        <el-button class="esri-icon-radio-checked" circle></el-button>
+        <el-button class="esri-icon-polyline" circle></el-button>
+        <el-button class="esri-icon-polygon" circle></el-button>
+        <span style="text-align: center;margin-left:20px;">
+          扩展范围：50米
+        </span>
+      </div><br/>
       <el-dropdown >
         <span class="layerquire">
           {{whichLayerquery.title}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -48,7 +56,7 @@
 
 <script>
 export default {
-  name:'layerQuery',
+  name:'drawQuery',
   props:[
     'thisview',
     'ifquire'

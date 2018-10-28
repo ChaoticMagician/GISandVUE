@@ -5,7 +5,7 @@
       <div id='toolsList'  >
         <div class="toolsListDiv" id="biger"><i id="biger" class="toolsLIstIcon iconfont icon-fangda">放大</i></div>
         <div class="toolsListDiv" id="litter"><i id="litter" class="toolsLIstIcon iconfont icon-suoxiao1"></i>缩小</div>
-        <div class="toolsListDiv" id="allmap"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>全图</div>
+        <div class="toolsListDiv" id="drawquery"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>框选</div>
         <div class="toolsListDiv" id="query"><i id="query" class="toolsLIstIcon iconfont icon-ditu1"></i>查询</div>
         <div class="toolsListDiv" id="long"><i id="long" class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
         <div class="toolsListDiv" id="area"><i id="area" class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
@@ -26,7 +26,7 @@
             class="layersListPopup"></component>
           </keep-alive>
       </div>
-      <!-- 这是要素图层查询 -->
+      <!-- 这是图层要素图层查询 -->
       <layer-query 
         ref="layerQuery"
         v-if="ifquire"
@@ -35,6 +35,15 @@
         @chance-layers-even='chancelayers'
         @chance-if-quire='ifquire=false'
       ></layer-query>
+      <!-- 这是绘图要素图层查询 -->
+      <draw-query 
+        ref="drawQuery"
+        v-if="ifDrawquire"
+        :thisview=thisview
+        :ifDrawquire=ifDrawquire
+        @chance-layers-even='chancelayers'
+        @chance-if-quire='ifDrawquire=false'
+      ></draw-query>
   </div>
 </template>
 
@@ -43,11 +52,12 @@ import * as esriLoader from 'esri-loader'
 import baseMapList from '@/components/home/layersList/baseMapList'
 import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
-import layerQuery    from '@/components/home/layerQuery/layerQuery'
+import layerQuery    from '@/components/home/query/layerQuery'
+import drawQuery    from '@/components/home/query/drawQuery'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList,layerQuery
+    baseMapList,layerList,tameList,layerQuery,drawQuery
   },
   data () {
     return {
@@ -58,6 +68,7 @@ export default {
       listcomponent:'baseMapList',
       whichListIs: null,
       ifquire:false,
+      ifDrawquire:true,
     }
   },
   mounted(){
@@ -221,10 +232,20 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            case "allmap" :view.goTo(extent);break;
+            // case "drawquery" :view.goTo(extent);break;
+            case "drawquery" :{ if(vuem.ifDrawquire){
+                                  vuem.$refs.drawQuery.chanceIfQuire();
+                                }else{
+                                  vuem.ifquire=false;
+                                  vuem.ifDrawquire=true;
+                                }
+                              };break;
             case "query":{ if(vuem.ifquire){
                             vuem.$refs.layerQuery.chanceIfQuire();
-                          }else{vuem.ifquire=true}
+                          }else{
+                                  vuem.ifDrawquire=false;
+                                  vuem.ifquire=true;
+                                }
                          };break;
             case "long" : view.graphics.removeAll();
                             measureTools.drawPolylineMeasuelong(draw,view,'long');
