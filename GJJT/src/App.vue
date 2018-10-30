@@ -39,4 +39,7 @@ export default {
   padding: 7px;
   /* font-size: 15px; */
 }
+.darwButtens .el-input{
+  width:30%;
+}
 </style>

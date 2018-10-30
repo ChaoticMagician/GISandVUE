@@ -12,45 +12,42 @@
         <el-button class="esri-icon-polyline" circle></el-button>
         <el-button class="esri-icon-polygon" circle></el-button>
         <span style="text-align: center;margin-left:20px;">
-          扩展范围：50米
+          扩展范围:
+        <el-input
+          size="mini"
+          placeholder="请输入内容"
+          v-model="bufferValue">
+        </el-input>米
         </span>
       </div><br/>
-      <el-dropdown >
-        <span class="layerquire">
-          {{whichLayerquery.title}}<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown" class="Layer-list"  >
-          <el-dropdown-item
-          class="Layer-list-li"
-          v-for="trem in listdataNew"
-          :key="trem.id"
-          >
-          <span 
-            @click="[
-              queryFLlist(thisview,whichLayerquery.oldlayerid,trem.id,querywatch),
-              trem.visible=true,
-              whichLayerquery= {title:trem.title,oldlayerid:trem.id,featureInfoField:trem.featureInfoField}
-            ]"
-          >{{trem.title}}</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <span style="padding-left:30%">
-        总数:{{queryFLlistdataSum}}
-      </span>
-    </div>
-    <el-table
-      :data="queryFLlistdata"
-      @row-click='gotoThisElement'
-      height="500"
-      class="quireFLlist">
-      <el-table-column
-        :prop="'attributes.'+whichLayerquery.featureInfoField"
-        label="要素标题"
+      <el-tabs :value='selectpape' type="card" @tab-remove="chancelayersUnvisible" >
+        <el-tab-pane
+          v-for="(item) in LayerIsVisible"
+          :key="item.id"
+          :label="item.title"
+          :name="item.id"
+          closable
         >
-      </el-table-column>
-    </el-table>
-
+          {{item.title}}
+        </el-tab-pane>
+        <el-tab-pane
+          label="添加图层"
+          name="selectLayers"
+        >
+          <el-table
+          :data="LayerNoVisible"
+          @row-click='chancelayersVisible'
+          height="450"
+          class="quireFLlist">
+          <el-table-column
+            prop="title"
+            label="图层名称"
+            >
+          </el-table-column>
+        </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </el-card>
 </template>
 
@@ -59,94 +56,52 @@ export default {
   name:'drawQuery',
   props:[
     'thisview',
-    'ifquire'
+    'ifDrawquire'
   ],
   data(){
     return{
       listdata: window.arcgis.layersList,
-      whichLayerquery:{title:'请选择图层',oldlayerid:"",featureInfoField:''},
-      querywatch: {},
       queryFLlistdata:[],
+      selectpape:"selectLayers",
+      bufferValue:'10',
     }
   },
   computed:{
-    listdataNew:function(){
-      return this.listdata.filter(item=>item.type!='geojsonURL')
+    // selectpape:function(){
+    //   let selectarr = [];
+    //   this.LayerIsVisible.forEach(element => {
+    //     selectarr.push(element.id)
+    //   });
+    //   selectarr.push("selectLayers");
+    //   return selectarr[0]
+    // },
+    LayerIsVisible:function(){
+      return this.listdata.filter(item=>item.visible&&item.type!='geojsonURL')
+    },
+    LayerNoVisible:function(){
+      return this.listdata.filter(item=>!item.visible&&item.type!='geojsonURL')
     },
     queryFLlistdataSum:function(){
       return this.queryFLlistdata.length
     }
   },
   methods:{
-    //这是属性列表反馈
-    queryFLlist(view,oldid,id,oldQuery){
-      //关闭老要素图层，并打开新的要素图层，
-      //PS:新老要素图层一样时不操作，老要素为空时不操作
-      if(oldid==id){null}else{
-        if(oldid){
-          this.$emit('chance-layers-even',oldid,false);
-          //顺便关掉老的视图监听
-          oldQuery.remove();
-        }
-        this.$emit('chance-layers-even',id,true);
-      }
-      let querydata = this.queryFLlistdata;
-      //监听视图属性返回查询结果
-      let querywatch = view.watch("updating", function(value){
-        querydata.map((team)=>{querydata.shift()});
-        let faa = view.map.findLayerById(id+"fea")
-        if(!value&&faa){
-          faa.queryFeatures({
-            geometry: view.extent,
-            returnGeometry: true
-          }).then(function(results){
-            results.features.forEach(element => {
-              querydata.push(element)
-            });
-            //返回图层查询列表
-          }).catch(function(error) {
-            console.error("query failed: ", error);
-          });
-        };
-      })
-      this.querywatch= querywatch;
-    },
     //关闭组建本身
     chanceIfQuire(){
       this.$emit('chance-if-quire');
-      //还原组件
-      if(this.whichLayerquery.oldlayerid===''){null}else{
-        this.$emit('chance-layers-even',this.whichLayerquery.oldlayerid,false);
-        this.querywatch.remove();
-        this.whichLayerquery={title:'请选择图层',oldlayerid:"",featureInfoField:''};
-        this.querywatch={};
-      };
-      //还原图层控制选择
-      this.listdata.forEach(
-        (team)=>{
-          team.visible=false;
-          this.$emit('chance-layers-even',team.id,false);
-        }
-      )
     },
-    gotoThisElement(row,event,column){
-      let view = this.thisview
-       
-      let getlocation = function(row){
-        switch(row.geometry.type){
-          case "point"   :return row.geometry;break;
-          case "polyline":return row.geometry.extent.center;break;
-          case "polygon" :return row.geometry.centroid;break;
+    chancelayersVisible(row,event,column){
+      row.visible=true
+      this.$emit('chance-layers-even',row.id,true);
+    },
+    chancelayersUnvisible(id){
+      // row.visible=true
+      this.listdata.forEach(element => {
+        if (element.id===id) {
+          element.visible=false
         }
-      };
-      let location=getlocation(row);
-      view.goTo(row.geometry).then(function() {
-        view.popup.open({
-          features: [row],  
-          featureMenuOpen: true, 
-          location
-        });
       });
+      this.$emit('chance-layers-even',id,false);
     }
   }
 }

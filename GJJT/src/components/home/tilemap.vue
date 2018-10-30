@@ -71,6 +71,8 @@ export default {
       ifDrawquire:true,
     }
   },
+  computed:{
+  },
   mounted(){
     this.createView(this)
   },
@@ -232,10 +234,10 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            // case "drawquery" :view.goTo(extent);break;
             case "drawquery" :{ if(vuem.ifDrawquire){
                                   vuem.$refs.drawQuery.chanceIfQuire();
-                                }else{
+                                }
+                                else{
                                   vuem.ifquire=false;
                                   vuem.ifDrawquire=true;
                                 }
