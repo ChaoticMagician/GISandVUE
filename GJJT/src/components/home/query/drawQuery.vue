@@ -8,9 +8,9 @@
         @click="chanceIfQuire()"
         >X</el-button><br/>
       <div class="darwButtens">
-        <el-button class="esri-icon-radio-checked" circle></el-button>
-        <el-button class="esri-icon-polyline" circle></el-button>
-        <el-button class="esri-icon-polygon" circle></el-button>
+        <el-button class="esri-icon-radio-checked" circle @click="drawGeometry('multipoint',draw,thisview,bufferValue)"></el-button>
+        <el-button class="esri-icon-polyline" circle @click="drawGeometry('polyline',draw,thisview,bufferValue)"></el-button>
+        <el-button class="esri-icon-polygon" circle @click="drawGeometry('polygon',draw,thisview,bufferValue)"></el-button>
         <span style="text-align: center;margin-left:20px;">
           扩展范围:
         <el-input
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import * as esriLoader from 'esri-loader'
 export default {
   name:'drawQuery',
   props:[
@@ -61,20 +62,24 @@ export default {
   data(){
     return{
       listdata: window.arcgis.layersList,
+      draw:{},
       queryFLlistdata:[],
       selectpape:"selectLayers",
-      bufferValue:'10',
+      bufferValue:100,
     }
   },
+  mounted(){
+    //实例化draw对象
+    esriLoader.loadModules([
+      "esri/views/2d/draw/Draw",
+    ]).then(([Draw])=>{
+      let view = this.thisview;
+      this.draw = new Draw({
+        view: view
+      });
+    })
+  },
   computed:{
-    // selectpape:function(){
-    //   let selectarr = [];
-    //   this.LayerIsVisible.forEach(element => {
-    //     selectarr.push(element.id)
-    //   });
-    //   selectarr.push("selectLayers");
-    //   return selectarr[0]
-    // },
     LayerIsVisible:function(){
       return this.listdata.filter(item=>item.visible&&item.type!='geojsonURL')
     },
@@ -86,6 +91,13 @@ export default {
     }
   },
   methods:{
+    drawGeometry(type,draw,view,bufferValue){
+      esriLoader.loadModules([
+        "/static/Toolsjs/drawTools.js",
+      ]).then(([drawTools])=>{
+        drawTools.drawGeometry(type,draw,view,bufferValue);
+      })
+    },
     //关闭组建本身
     chanceIfQuire(){
       this.$emit('chance-if-quire');
@@ -95,7 +107,6 @@ export default {
       this.$emit('chance-layers-even',row.id,true);
     },
     chancelayersUnvisible(id){
-      // row.visible=true
       this.listdata.forEach(element => {
         if (element.id===id) {
           element.visible=false

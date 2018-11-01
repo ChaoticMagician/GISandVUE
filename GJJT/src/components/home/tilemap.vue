@@ -68,7 +68,7 @@ export default {
       listcomponent:'baseMapList',
       whichListIs: null,
       ifquire:false,
-      ifDrawquire:true,
+      ifDrawquire:false,
     }
   },
   computed:{
