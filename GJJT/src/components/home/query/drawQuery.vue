@@ -8,9 +8,9 @@
         @click="chanceIfQuire()"
         >X</el-button><br/>
       <div class="darwButtens">
-        <el-button class="esri-icon-radio-checked" circle @click="drawGeometry('multipoint',draw,thisview,bufferValue)"></el-button>
-        <el-button class="esri-icon-polyline" circle @click="drawGeometry('polyline',draw,thisview,bufferValue)"></el-button>
-        <el-button class="esri-icon-polygon" circle @click="drawGeometry('polygon',draw,thisview,bufferValue)"></el-button>
+        <el-button class="esri-icon-radio-checked" circle @click="drawGeometry('multipoint')"></el-button>
+        <el-button class="esri-icon-polyline" circle @click="drawGeometry('polyline')"></el-button>
+        <el-button class="esri-icon-polygon" circle @click="drawGeometry('polygon')"></el-button>
         <span style="text-align: center;margin-left:20px;">
           扩展范围:
         <el-input
@@ -20,7 +20,12 @@
         </el-input>米
         </span>
       </div><br/>
-      <el-tabs :value='selectpape' type="card" @tab-remove="chancelayersUnvisible" >
+      <el-tabs
+        :value="layerIda"
+        type="card"
+        @tab-remove="chancelayersUnvisible"
+        @tab-click="chanceTabPane"
+        >
         <el-tab-pane
           v-for="(item) in LayerIsVisible"
           :key="item.id"
@@ -35,16 +40,16 @@
           name="selectLayers"
         >
           <el-table
-          :data="LayerNoVisible"
-          @row-click='chancelayersVisible'
-          height="450"
-          class="quireFLlist">
-          <el-table-column
-            prop="title"
-            label="图层名称"
-            >
-          </el-table-column>
-        </el-table>
+            :data="LayerNoVisible"
+            @row-click='chancelayersVisible'
+            height="450"
+            class="quireFLlist">
+            <el-table-column
+              prop="title"
+              label="图层名称"
+              >
+            </el-table-column>
+          </el-table>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -64,8 +69,10 @@ export default {
       listdata: window.arcgis.layersList,
       draw:{},
       queryFLlistdata:[],
-      selectpape:"selectLayers",
       bufferValue:100,
+      layerId:'',
+      queryGeometry:{},
+      definitionExpression:''
     }
   },
   mounted(){
@@ -88,22 +95,50 @@ export default {
     },
     queryFLlistdataSum:function(){
       return this.queryFLlistdata.length
+    },
+    layerIda:{
+      get : function(){
+        if(this.LayerIsVisible[0]==null){
+          return "selectLayers"
+        }else if(this.layerId == ''){
+          return this.LayerIsVisible[0].id
+        }else{
+          return this.layerId
+        }
+      },
+      set : function(newValue){
+        this.layerId=newValue
+      }
     }
   },
   methods:{
-    drawGeometry(type,draw,view,bufferValue){
+    drawGeometry(type){
       esriLoader.loadModules([
         "/static/Toolsjs/drawTools.js",
       ]).then(([drawTools])=>{
-        drawTools.drawGeometry(type,draw,view,bufferValue);
+
+        drawTools.drawGeometryPromise(type,this.draw,this.thisview,this.bufferValue)
+        .then((queryGeometry)=>{ 
+          this.queryGeometry=queryGeometry;
+        })
       })
+    },
+    //页签被点击事件
+    chanceTabPane(event){
+      console.log(event.name)
+      this.layerId = event.name;
+    },
+    //传入图层、面图形、筛选字段，来查询覆盖面内要素
+    getQueryData(thisview,layerId,queryGeometry,definitionExpression){
+
     },
     //关闭组建本身
     chanceIfQuire(){
       this.$emit('chance-if-quire');
     },
     chancelayersVisible(row,event,column){
-      row.visible=true
+      row.visible=true;
+      this.layerId = row.id ;
       this.$emit('chance-layers-even',row.id,true);
     },
     chancelayersUnvisible(id){
