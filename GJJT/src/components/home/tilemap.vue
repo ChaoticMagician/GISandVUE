@@ -276,7 +276,7 @@ export default {
       })
     },
     //图层切换组件调用本方法切换图层
-    chancelayers(chancedlayerid,visible){
+    chancelayers(chancedlayerid,visible,backFun){
       // 引入依赖
       esriLoader.loadModules([
         'esri/request',
@@ -290,6 +290,9 @@ export default {
           .then((response) => {
             let proplayer = geojsonDataToFeatureLayer.geojsonDataToFeature(response.data,chancedlayerobj.id+"fea",chancedlayerobj.featureInfoField);
             this.thismap.add(proplayer);
+          })
+          .then((response)=>{
+            backFun(this.thisview,chancedlayerid,this.$refs.drawQuery.queryGeometry)
           })
         }else{
           let proplayer = this.thismap.findLayerById(chancedlayerobj.id+"fea");

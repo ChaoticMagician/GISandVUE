@@ -75,6 +75,7 @@ define([
         let popupTemplate =_getpopufields(fields,titleField)
         let layer = new FeatureLayer({
             id,
+            keyID:titleField,
             geometryType: Graphics[0].geometry.type,
             source: Graphics,
             fields,

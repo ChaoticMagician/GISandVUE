@@ -33,7 +33,17 @@
           :name="item.id"
           closable
         >
-          {{item.title}}
+          <el-table
+            :data="queryFLlistdata"
+            @row-click='gotoThisElement'
+            height="450"
+            class="quireFLlist">
+            <el-table-column
+              :prop="'attributes.'+queryFLlistdataKey"
+              :label="'总数'+queryFLlistdataSum"
+              >
+            </el-table-column>
+          </el-table>
         </el-tab-pane>
         <el-tab-pane
           label="添加图层"
@@ -69,9 +79,10 @@ export default {
       listdata: window.arcgis.layersList,
       draw:{},
       queryFLlistdata:[],
+      queryFLlistdataKey:'',
       bufferValue:100,
       layerId:'',
-      queryGeometry:{},
+      queryGeometry: this.thisview.extent,
       definitionExpression:''
     }
   },
@@ -101,13 +112,10 @@ export default {
         if(this.LayerIsVisible[0]==null){
           return "selectLayers"
         }else if(this.layerId == ''){
-          return this.LayerIsVisible[0].id
+          return "selectLayers"
         }else{
           return this.layerId
         }
-      },
-      set : function(newValue){
-        this.layerId=newValue
       }
     }
   },
@@ -116,30 +124,53 @@ export default {
       esriLoader.loadModules([
         "/static/Toolsjs/drawTools.js",
       ]).then(([drawTools])=>{
-
         drawTools.drawGeometryPromise(type,this.draw,this.thisview,this.bufferValue)
         .then((queryGeometry)=>{ 
           this.queryGeometry=queryGeometry;
+          this.getQueryData(this.thisview,this.layerIda,this.queryGeometry)
         })
       })
     },
     //页签被点击事件
     chanceTabPane(event){
-      console.log(event.name)
       this.layerId = event.name;
+      this.getQueryData(this.thisview,this.layerIda,this.queryGeometry)
     },
     //传入图层、面图形、筛选字段，来查询覆盖面内要素
     getQueryData(thisview,layerId,queryGeometry,definitionExpression){
-
+      this.queryFLlistdata = [];
+      let faa = thisview.map.findLayerById(layerId+"fea");
+      if(layerId!=='selectLayers'&&faa&&queryGeometry!={}){
+        var query = faa.createQuery();
+        query.geometry = queryGeometry;
+        query.returnGeometry = true;
+        this.queryFLlistdataKey = faa.keyID;
+        let queryFLlistdata = this.queryFLlistdata;
+        faa.queryFeatures(query)
+        .then(function(results){
+          results.features.forEach(element => {
+            queryFLlistdata.push(element)
+          });
+        });
+      }else{
+        if(layerId=='selectLayers'){this.$message('请选择图层');}
+        else if(queryGeometry=={}){this.$message('请绘制缓冲区');}
+      }
     },
     //关闭组建本身
     chanceIfQuire(){
+      //重置组建，删除添加的drawToolsGraphicsLayer（画扩展区的图形图层），重置全局变量
+      this.thisview.map.remove(this.thisview.map.findLayerById('drawToolsGraphicsLayer'));
+      this.queryGeometry = this.thisview.extent;
+      this.bufferValue = 100;
+      this.definitionExpression = '';
+      //关闭显示
       this.$emit('chance-if-quire');
     },
     chancelayersVisible(row,event,column){
       row.visible=true;
       this.layerId = row.id ;
-      this.$emit('chance-layers-even',row.id,true);
+      this.$emit('chance-layers-even',row.id,true,this.getQueryData);
     },
     chancelayersUnvisible(id){
       this.listdata.forEach(element => {
@@ -147,8 +178,37 @@ export default {
           element.visible=false
         }
       });
+      this.layerId = '' ;
       this.$emit('chance-layers-even',id,false);
-    }
+    },
+    //定位元素,并且打开弹窗,并在绘图层添加样式
+    gotoThisElement(row,event,column){
+      let view = this.thisview
+      let getlocation = function(row){
+        switch(row.geometry.type){
+          case "point"   :return row.geometry;break;
+          case "polyline":return row.geometry.extent.center;break;
+          case "polygon" :return row.geometry.centroid;break;
+        }
+      };
+      let location=getlocation(row);
+      view.goTo(row.geometry).then(function() {
+        view.popup.open({
+          features: [row],  
+          featureMenuOpen: true, 
+          location
+        });
+      });
+      //移除视图的图形层
+      this.thisview.graphics.removeAll();
+      //创建图形
+      esriLoader.loadModules([
+        "/static/Toolsjs/drawTools.js",
+      ]).then(([drawTools])=>{
+        let graphic = drawTools.geometryGraphic(row.geometry);
+        this.thisview.graphics.add(graphic)
+      })
+    },
   }
 }
 </script>
