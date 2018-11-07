@@ -1,11 +1,11 @@
 <template>
   <div class="eleMap" style="height: 100%;">
-    <div id="viewDiv"></div>
+    <div id="viewDiv" ref="viewDiv"></div>
       <!-- 这是地图功能 -->
       <div id='toolsList'  >
         <div class="toolsListDiv" id="biger"><i id="biger" class="toolsLIstIcon iconfont icon-fangda">放大</i></div>
         <div class="toolsListDiv" id="litter"><i id="litter" class="toolsLIstIcon iconfont icon-suoxiao1"></i>缩小</div>
-        <div class="toolsListDiv" id="drawquery"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>框选</div>
+        <div class="toolsListDiv" id="output"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>输出</div>
         <div class="toolsListDiv" id="query"><i id="query" class="toolsLIstIcon iconfont icon-ditu1"></i>查询</div>
         <div class="toolsListDiv" id="long"><i id="long" class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
         <div class="toolsListDiv" id="area"><i id="area" class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
@@ -26,49 +26,39 @@
             class="layersListPopup"></component>
           </keep-alive>
       </div>
-      <!-- 这是图层要素图层查询 -->
-      <layer-query 
-        ref="layerQuery"
-        v-if="ifquire"
-        :thisview=thisview
-        :ifquire=ifquire
-        @chance-layers-even='chancelayers'
-        @chance-if-quire='ifquire=false'
-      ></layer-query>
       <!-- 这是绘图要素图层查询 -->
       <draw-query 
         ref="drawQuery"
-        v-if="ifDrawquire"
+        v-if="whichToolIs == 'ifDrawquire'"
         :thisview=thisview
-        :ifDrawquire=ifDrawquire
         @chance-layers-even='chancelayers'
-        @chance-if-quire='ifDrawquire=false'
+        @chance-if-quire='whichToolIs="false"'
       ></draw-query>
   </div>
 </template>
 
 <script>
 import * as esriLoader from 'esri-loader'
+import html2canvas from 'html2canvas';
 import baseMapList from '@/components/home/layersList/baseMapList'
 import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
-import layerQuery    from '@/components/home/query/layerQuery'
 import drawQuery    from '@/components/home/query/drawQuery'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList,layerQuery,drawQuery
+    baseMapList,layerList,tameList,drawQuery
   },
   data () {
     return {
       BasemapObjArr: Object,
       thisview: Object,
       thismap: Object,
-      layerListEvent:{},
+      //20181107 用html2canvas定义了地图的截图文件
+      mapOutputUrl:'',
       listcomponent:'baseMapList',
       whichListIs: null,
-      ifquire:false,
-      ifDrawquire:false,
+      whichToolIs:'false',
     }
   },
   computed:{
@@ -234,28 +224,40 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            case "drawquery" :{ if(vuem.ifDrawquire){
-                                  vuem.$refs.drawQuery.chanceIfQuire();
-                                }
-                                else{
-                                  vuem.ifquire=false;
-                                  vuem.ifDrawquire=true;
-                                }
-                              };break;
-            case "query":{ if(vuem.ifquire){
-                            vuem.$refs.layerQuery.chanceIfQuire();
-                          }else{
-                                  vuem.ifDrawquire=false;
-                                  vuem.ifquire=true;
-                                }
-                         };break;
-            case "long" : view.graphics.removeAll();
+            case "output" :let mapelement = vuem.$refs.viewDiv;
+                          mapelement.style.zIndex = 100;
+                          html2canvas(
+                            mapelement,
+                            {
+                              seCORS : true,
+                              foreignObjectRendering : true,
+                              allowTaint :false,
+                              logging:false
+                            }
+                          ).then(
+                            canvas=>{
+                              vuem.mapOutputUrl = canvas.toDataURL();
+                              vuem.whichToolIs = 'mapOutputUrl';
+                              mapelement.style.zIndex = '';
+                            }
+                          );break;
+            case "query"  :if(vuem.whichToolIs == 'ifDrawquire'){
+                              vuem.$refs.drawQuery.chanceIfQuire();
+                            }
+                            else{
+                              vuem.whichToolIs = 'ifDrawquire'
+                            };
+                          break;
+            case "long"   : view.graphics.removeAll();
                             measureTools.drawPolylineMeasuelong(draw,view,'long');
                           break;
-            case "area" : view.graphics.removeAll();
+            case "area"   : view.graphics.removeAll();
                             measureTools.drawPolygonMeasueArea(draw,view,'area');
                           break;
-            case "remove" :view.graphics.removeAll();break;
+            case 'legend' :null;
+                          break;
+            case "remove" :view.graphics.removeAll();
+                          break;
           }
         };
         this.thisview = view;
@@ -313,6 +315,7 @@ export default {
 
 <style scoped>
   #viewDiv {
+    position: relative;
     padding: 0;
     margin: 0;
     height: 100%;

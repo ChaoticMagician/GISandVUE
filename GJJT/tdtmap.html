@@ -34,13 +34,13 @@
 
   <script>
     require([
-        "esri/Map",
-        "esri/views/MapView",
-        "esri/layers/FeatureLayer",
-        "esri/layers/GraphicsLayer",
-        "esri/geometry/geometryEngine",
-        "esri/Graphic"
-      ],
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/geometry/geometryEngine",
+      "esri/Graphic"
+    ],
       function (
         Map, MapView,
         FeatureLayer,
@@ -93,11 +93,11 @@
 
         // query all features from the wells layer
         view.when(function () {
-            return wellsLayer.when(function () {
-              var query = wellsLayer.createQuery();
-              return wellsLayer.queryFeatures(query);
-            });
-          })
+          return wellsLayer.when(function () {
+            var query = wellsLayer.createQuery();
+            return wellsLayer.queryFeatures(query);
+          });
+        })
           .then(getValues)
           .then(getUniqueValues)
           .then(addToSelect)
@@ -275,3 +275,16 @@
 </body>
 
 </html>
+request=GetFeature&version=1.1.0&typename=jianfudanhistory&
+Filter=<Filter
+  xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">
+  <Intersects>
+    <PropertyName>the_geom</PropertyName>
+    <gml:Envelope srsName="EPSG:4326">
+      <gml:lowerCorner>120.1762573834964 30.280899047851562</gml:lowerCorner>
+      <gml:upperCorner>120.18999029365265 30.294631958007812</gml:upperCorner>
+    </gml:Envelope>
+  </Intersects>
+</Filter>&outputformat=json
+
+

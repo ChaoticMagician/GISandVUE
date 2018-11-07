@@ -50,8 +50,7 @@
 export default {
   name:'layerQuery',
   props:[
-    'thisview',
-    'ifquire'
+    'thisview'
   ],
   data(){
     return{

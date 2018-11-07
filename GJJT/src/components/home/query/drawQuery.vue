@@ -71,8 +71,7 @@ import * as esriLoader from 'esri-loader'
 export default {
   name:'drawQuery',
   props:[
-    'thisview',
-    'ifDrawquire'
+    'thisview'
   ],
   data(){
     return{
