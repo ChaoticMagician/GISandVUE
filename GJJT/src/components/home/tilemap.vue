@@ -43,7 +43,7 @@ import html2canvas from 'html2canvas';
 import baseMapList from '@/components/home/layersList/baseMapList'
 import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
-import drawQuery    from '@/components/home/query/drawQuery'
+import drawQuery   from '@/components/home/popup/drawQuery'
 export default {
   name: 'tilemap',
   components:{
@@ -54,7 +54,6 @@ export default {
       BasemapObjArr: Object,
       thisview: Object,
       thismap: Object,
-      //20181107 用html2canvas定义了地图的截图文件
       mapOutputUrl:'',
       listcomponent:'baseMapList',
       whichListIs: null,
@@ -81,6 +80,7 @@ export default {
         //个人工具组件封装的jd
         "/static/Toolsjs/measureTools.js",
         "/static/Toolsjs/geojsonDataToFeatureLayer.js",
+        "/static/Toolsjs/putoutMap.js",
         
         "esri/views/2d/draw/Draw",
         "esri/views/MapView",
@@ -88,7 +88,7 @@ export default {
         "esri/widgets/Zoom",
         "dojo/domReady!"
       ]).then(([Map,Basemap,WebTileLayer,MapImageLayer,WMSLayer,esriRequest,esriConfig,
-        measureTools,geojsonDataToFeatureLayer,
+        measureTools,geojsonDataToFeatureLayer,putoutMap,
         Draw,MapView,Extent,Zoom]) => {
 
         //加载所有的WebTileLayer图层
@@ -224,23 +224,12 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            case "output" :let mapelement = vuem.$refs.viewDiv;
-                          mapelement.style.zIndex = 100;
-                          html2canvas(
-                            mapelement,
-                            {
-                              seCORS : true,
-                              foreignObjectRendering : true,
-                              allowTaint :false,
-                              logging:false
-                            }
+            case "output" :putoutMap.putoutMapPromise(
+                            html2canvas,vuem.$refs.viewDiv,vuem.thisview
                           ).then(
-                            canvas=>{
-                              vuem.mapOutputUrl = canvas.toDataURL();
-                              vuem.whichToolIs = 'mapOutputUrl';
-                              mapelement.style.zIndex = '';
-                            }
-                          );break;
+                            imgData => {vuem.mapOutputUrl = imgData;}
+                          )
+                          ;break;
             case "query"  :if(vuem.whichToolIs == 'ifDrawquire'){
                               vuem.$refs.drawQuery.chanceIfQuire();
                             }
