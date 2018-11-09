@@ -42,4 +42,7 @@ export default {
 .darwButtens .el-input{
   width:30%;
 }
+.putoutmap .el-card__header{
+  padding: 8px 20px;
+}
 </style>

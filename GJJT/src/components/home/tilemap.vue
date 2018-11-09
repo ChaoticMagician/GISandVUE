@@ -34,20 +34,26 @@
         @chance-layers-even='chancelayers'
         @chance-if-quire='whichToolIs="false"'
       ></draw-query>
+      <!-- 这是地图输出功能窗口 -->
+      <putout-map
+        ref="putoutMap"
+        v-if="whichToolIs == 'ifoutput'"
+        @chance-if-putout='whichToolIs="false"'
+      ></putout-map>
   </div>
 </template>
 
 <script>
 import * as esriLoader from 'esri-loader'
-import html2canvas from 'html2canvas';
 import baseMapList from '@/components/home/layersList/baseMapList'
 import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
 import drawQuery   from '@/components/home/popup/drawQuery'
+import putoutMap   from '@/components/home/popup/putoutMap'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList,drawQuery
+    baseMapList,layerList,tameList,drawQuery,putoutMap
   },
   data () {
     return {
@@ -80,7 +86,6 @@ export default {
         //个人工具组件封装的jd
         "/static/Toolsjs/measureTools.js",
         "/static/Toolsjs/geojsonDataToFeatureLayer.js",
-        "/static/Toolsjs/putoutMap.js",
         
         "esri/views/2d/draw/Draw",
         "esri/views/MapView",
@@ -88,7 +93,7 @@ export default {
         "esri/widgets/Zoom",
         "dojo/domReady!"
       ]).then(([Map,Basemap,WebTileLayer,MapImageLayer,WMSLayer,esriRequest,esriConfig,
-        measureTools,geojsonDataToFeatureLayer,putoutMap,
+        measureTools,geojsonDataToFeatureLayer,
         Draw,MapView,Extent,Zoom]) => {
 
         //加载所有的WebTileLayer图层
@@ -224,12 +229,18 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            case "output" :putoutMap.putoutMapPromise(
-                            html2canvas,vuem.$refs.viewDiv,vuem.thisview
-                          ).then(
-                            imgData => {vuem.mapOutputUrl = imgData;}
-                          )
-                          ;break;
+            case "output" :
+                          // vuem.thisview.zoom = 10;
+                          // vuem.$refs.viewDiv.style.height = '2200px';
+                          // vuem.$refs.viewDiv.style.width = '5000px';
+                          // console.log(vuem.thisview.extent);
+                          if(vuem.whichToolIs == 'ifoutput'){
+                            vuem.$refs.putoutMap.chanceIfPutout();
+                          }
+                          else{
+                            vuem.whichToolIs = 'ifoutput';
+                          };
+                          break;
             case "query"  :if(vuem.whichToolIs == 'ifDrawquire'){
                               vuem.$refs.drawQuery.chanceIfQuire();
                             }
