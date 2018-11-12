@@ -118,6 +118,10 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    let proplayer = this.thisview.map.findLayerById('ToolsGraphicsLayer');
+    this.thisview.map.remove(proplayer);
+  },
   methods:{
     drawGeometry(type){
       esriLoader.loadModules([
@@ -158,8 +162,6 @@ export default {
     },
     //关闭组建本身
     chanceIfQuire(){
-      //重置组建，删除添加的drawToolsGraphicsLayer（画扩展区的图形图层），重置全局变量
-      this.thisview.map.remove(this.thisview.map.findLayerById('drawToolsGraphicsLayer'));
       this.queryGeometry = this.thisview.extent;
       this.bufferValue = 100;
       this.definitionExpression = '';

@@ -37,6 +37,7 @@
       <!-- 这是地图输出功能窗口 -->
       <putout-map
         ref="putoutMap"
+        :thisview=thisview
         v-if="whichToolIs == 'ifoutput'"
         @chance-if-putout='whichToolIs="false"'
       ></putout-map>
@@ -230,10 +231,11 @@ export default {
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
             case "output" :
-                          // vuem.thisview.zoom = 10;
-                          // vuem.$refs.viewDiv.style.height = '2200px';
-                          // vuem.$refs.viewDiv.style.width = '5000px';
-                          // console.log(vuem.thisview.extent);
+                          // vuem.thisview.zoom = 16;
+                          // vuem.$refs.viewDiv.style.height = '1400px';
+                          // vuem.$refs.viewDiv.style.width = '3000px';
+                          // vuem.thisview.center = [117.68173938239441,39.01211231678524]
+                          // vuem.thisview.on("click", console.log);
                           if(vuem.whichToolIs == 'ifoutput'){
                             vuem.$refs.putoutMap.chanceIfPutout();
                           }

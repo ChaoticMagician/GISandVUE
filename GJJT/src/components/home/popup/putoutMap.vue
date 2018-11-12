@@ -9,10 +9,14 @@
         >X</el-button><br/>
     </div>
     <el-dropdown 
-      @command='command=>putoutGrade=command'
+      trigger="click"
+      @command='chancePutoutExtengGrade'
     >
-      <span class="el-dropdown-link">
-        输出层级  {{putoutGrade}} <i class="el-icon-arrow-down el-icon--right"></i>
+      <span>
+        输出层级
+        <span class="spanValue">
+          {{putoutGrade}} <i class="el-icon-arrow-down"></i>
+        </span>
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command='10'>10</el-dropdown-item>
@@ -22,24 +26,59 @@
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown 
-      @command='command=>putoutsize=command'
+      trigger="click"
+      @command='chancePutoutExtengSize'
     >
-      <span class="el-dropdown-link">
-         输出大小  {{putoutsize}} <i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
+      <span>输出大小
+        <span class="spanValue">
+          {{putoutsize}} <i class="el-icon-arrow-down"></i>
+        </span>
+      </span> 
+
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command='biger'>biger</el-dropdown-item>
         <el-dropdown-item command='middle'>middle</el-dropdown-item>
         <el-dropdown-item command='litter'>litter</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown><br/>
-    <el-col :span="4" :offset="9">
+    <div class="extentList">
+      上：
+      <el-input
+        disabled
+        :style="{width:'140px'}"
+        size='mini'
+        v-model="thisExtent.ymax">
+      </el-input>
+      右：
+      <el-input
+        disabled
+        :style="{width:'140px'}"
+        size='mini'
+        v-model="thisExtent.xmax">
+      </el-input>
+      下：
+      <el-input
+        disabled
+        :style="{width:'140px'}"
+        size='mini'
+        v-model="thisExtent.ymin">
+      </el-input>
+      左：
+      <el-input
+        disabled
+        :style="{width:'140px'}"
+        size='mini'
+        v-model="thisExtent.xmin">
+      </el-input>
+    </div>
+    <el-col class="puyoutButton" :span="4" :offset="9">
       <el-button type="primary" size='small' round>地图输出</el-button>
     </el-col>
   </el-card>
 </template>
 
 <script>
+import * as esriLoader from 'esri-loader'
 import html2canvas from 'html2canvas';
 export default {
   name:'putoutmap',
@@ -52,102 +91,188 @@ export default {
       putoutsize:'middle',
       extentarr:{
         biger:{
-          height:'2200px',
+          height:'2600px',
           width:'5000px',
           10:{
-            xmin:117.45604303790252,
-            ymin:38.89502028165135,
-            xmax:117.9491884789352,
-            ymax:39.166627506476026,
+            xmin:116.8250792212681,
+            ymin:38.5676641307085,
+            xmax:118.53771366669035,
+            ymax:39.45724637969234,
           },
           12:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.46757434211283,
+            ymin:38.901086004869846,
+            xmax:117.89547574965701,
+            ymax:39.12331009790822,
           },
           14:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.62819812232402,
+            ymin:38.98431287150449,
+            xmax:117.73523777516291,
+            ymax:39.03984746111313,
           },
           16:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.66835406737681,
+            ymin:39.00516245546505,
+            xmax:117.69511933899928,
+            ymax:39.01905681969268,
           },
         },
         middle:{
-          height:'1800px',
+          height:'2000px',
           width:'4000px',
           10:{
-            xmin:117.51159906116213,
-            ymin:38.874786915155575,
-            xmax:118.00474450219481,
-            ymax:39.14639413998025,
+            xmin:116.99654842885943,
+            ymin:38.67020271684812,
+            xmax:118.36624445909901,
+            ymax:39.35505073196791,
           },
           12:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.51044164401067,
+            ymin:38.92663491680096,
+            xmax:117.85295138617437,
+            ymax:39.09758971676952,
           },
           14:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.63893638144943,
+            ymin:38.99074296678917,
+            xmax:117.72452094968845,
+            ymax:39.033524534083206,
           },
           16:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.67103327374541,
+            ymin:39.00676997928621,
+            xmax:117.69244549104337,
+            ymax:39.01745465428424,
           },
         },
         litter:{
           height:'1400px',
           width:'3000px',
           10:{
-            xmin: 117.14842727948366,
-            ymin: 38.79419638758766,
-            xmax: 117.64157272051634,
-            ymax: 39.06580361241234,
+            xmin:117.16836057486596,
+            ymin:38.77377011823328,
+            xmax:118.19477525150768,
+            ymax:39.251826268997924,
           },
           12:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.5533946805123,
+            ymin:38.95252676714725,
+            xmax:117.81008408427653,
+            ymax:39.071869335630815,
           },
           14:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.64961033962197,
+            ymin:38.99715162842289,
+            xmax:117.71384699151588,
+            ymax:39.02705157149663,
           },
           16:{
-            xmin: 116.60,
-            ymin: 38.62,
-            xmax: 118.19,
-            ymax: 39.24,
+            xmin:117.67371248011403,
+            ymin:39.01172115265542,
+            xmax:117.68976092626204,
+            ymax:39.015863205701294,
           },
         },
-      }
+      },
+      extent:{},
+      symbol: {
+        type: "simple-fill", 
+        color: [135,206,250,0.5],
+        outline: { 
+          color: '#FA8072',
+          width: 1
+        }
+      },
+      thisExtent:{
+        xmin:116.99654842885943,
+        ymin:38.67020271684812,
+        xmax:118.36624445909901,
+        ymax:39.35505073196791,
+      },
     }
+  },
+  created() {
+    this.createPutoutExteng(this);
+    //将创建view监听，获取元素被点击事件
+  },
+  beforeDestroy() {
+    let proplayer = this.thisview.map.findLayerById('ToolsGraphicsLayer');
+    this.thisview.map.remove(proplayer);
   },
   methods:{
     //关闭自身
     chanceIfPutout(){
       this.$emit('chance-if-putout');
     },
-    //创建截图
-    
+    //创建截图范围
+    createPutoutExteng(vm) {
+      esriLoader.loadModules([
+        'esri/layers/GraphicsLayer',
+        "esri/geometry/Extent",
+      ]).then(([GraphicsLayer,Extent])=>{
+        // console.log(vm)
+        //创建绘图图层,如具有绘图层则先去除再添加
+        let proplayer = vm.thisview.map.findLayerById('ToolsGraphicsLayer');
+        vm.thisview.map.remove(proplayer);
+        vm.extent = new Extent({
+          xmin: vm.thisExtent.xmin,
+          ymin: vm.thisExtent.ymin,
+          xmax: vm.thisExtent.xmax,
+          ymax: vm.thisExtent.ymax,
+          spatialReference: {
+            wkid: 4326
+          }
+        });
+        let Graphic ={
+          geometry: vm.extent,
+          symbol: vm.symbol
+        };
+        let GrLayer = new GraphicsLayer({
+          id:'ToolsGraphicsLayer'
+        });
+        vm.thisview.map.add(GrLayer);
+        GrLayer.graphics.add(Graphic);
+      })
+    },
+    //更改图形层级
+    chancePutoutExtengGrade(command){
+      this.putoutGrade = command;
+      this.thisExtent = this.extentarr[this.putoutsize][this.putoutGrade];
+      this._chancePutoutExteng(this);
+    },
+    //更改图形大小
+    chancePutoutExtengSize(command){
+      this.putoutsize = command
+      this.thisExtent = this.extentarr[this.putoutsize][this.putoutGrade];
+      this._chancePutoutExteng(this);
+    },
+    //更新图形
+    _chancePutoutExteng(vm){
+      esriLoader.loadModules([
+        "esri/geometry/Extent",
+      ]).then(([Extent])=>{
+        vm.extent = new Extent({
+          xmin: vm.thisExtent.xmin,
+          ymin: vm.thisExtent.ymin,
+          xmax: vm.thisExtent.xmax,
+          ymax: vm.thisExtent.ymax,
+          spatialReference: {
+            wkid: 4326
+          }
+        });
+        let Graphic ={
+          geometry: vm.extent,
+          symbol: vm.symbol
+        };
+        //移除视图的图形层,添加新图形
+        let proplayer = vm.thisview.map.findLayerById('ToolsGraphicsLayer');
+        proplayer.graphics.removeAll();
+        proplayer.graphics.add(Graphic);
+      })
+    }
   },
 }
-
 </script>
 
 <style scoped>
@@ -159,6 +284,17 @@ export default {
   }
   .putoutmap .el-dropdown{
     padding-left:10% 
+  }
+  .spanValue{
+    color: rgba(119, 119, 255, 0.89);
+  }
+  .extentList{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .puyoutButton{
+    margin-bottom:20px; 
   }
 </style>
 

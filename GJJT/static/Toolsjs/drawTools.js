@@ -26,10 +26,10 @@ define([
     //判断画图类型创建绘画事件
     const action = draw.create(this.type);
     //创建绘图图层
-    let proplayer = this.view.map.findLayerById('drawToolsGraphicsLayer');
+    let proplayer = this.view.map.findLayerById('ToolsGraphicsLayer');
     this.view.map.remove(proplayer);
     let GrLayer = new GraphicsLayer({
-      id:'drawToolsGraphicsLayer'
+      id:'ToolsGraphicsLayer'
     });
     this.view.map.add(GrLayer);
     //将全局变量赋予action，并在成为回调函数的全局变量
