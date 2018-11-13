@@ -61,7 +61,6 @@ export default {
       BasemapObjArr: Object,
       thisview: Object,
       thismap: Object,
-      mapOutputUrl:'',
       listcomponent:'baseMapList',
       whichListIs: null,
       whichToolIs:'false',
@@ -230,16 +229,9 @@ export default {
           switch(even.target.id){
             case "biger"  :selfzoom.zoomIn();break;
             case "litter" :selfzoom.zoomOut();break;
-            case "output" :
-                          // vuem.thisview.zoom = 16;
-                          // vuem.$refs.viewDiv.style.height = '1400px';
-                          // vuem.$refs.viewDiv.style.width = '3000px';
-                          // vuem.thisview.center = [117.68173938239441,39.01211231678524]
-                          // vuem.thisview.on("click", console.log);
-                          if(vuem.whichToolIs == 'ifoutput'){
+            case "output" :if(vuem.whichToolIs == 'ifoutput'){
                             vuem.$refs.putoutMap.chanceIfPutout();
-                          }
-                          else{
+                          }else{
                             vuem.whichToolIs = 'ifoutput';
                           };
                           break;

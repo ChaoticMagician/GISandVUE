@@ -45,4 +45,7 @@ export default {
 .putoutmap .el-card__header{
   padding: 8px 20px;
 }
+.imgView .el-card__header{
+  padding: 8px 20px;
+}
 </style>

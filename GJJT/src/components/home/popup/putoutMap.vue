@@ -12,17 +12,16 @@
       trigger="click"
       @command='chancePutoutExtengGrade'
     >
-      <span>
-        输出层级
+      <span>输出层级
         <span class="spanValue">
-          {{putoutGrade}} <i class="el-icon-arrow-down"></i>
+          {{Gradename[putoutGrade]}} <i class="el-icon-arrow-down"></i>
         </span>
       </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command='10'>10</el-dropdown-item>
-        <el-dropdown-item command='12'>12</el-dropdown-item>
-        <el-dropdown-item command='14'>14</el-dropdown-item>
-        <el-dropdown-item command='16'>16</el-dropdown-item>
+      <el-dropdown-menu slot="dropdown"  >
+        <el-dropdown-item command='10'>新区</el-dropdown-item>
+        <el-dropdown-item command='12'>街道</el-dropdown-item>
+        <el-dropdown-item command='14'>社区</el-dropdown-item>
+        <el-dropdown-item command='16'>小区</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <el-dropdown 
@@ -72,7 +71,13 @@
       </el-input>
     </div>
     <el-col class="puyoutButton" :span="4" :offset="9">
-      <el-button type="primary" size='small' round>地图输出</el-button>
+      <el-button
+        type="primary"
+        size='small'
+        round
+        @click="putoutMap"
+      >地图输出</el-button>
+      
     </el-col>
   </el-card>
 </template>
@@ -87,6 +92,12 @@ export default {
   ],
   data(){
     return{
+      Gradename:{
+        10:'新区',
+        12:'街道',
+        14:'社区',
+        16:'小区',
+      },
       putoutGrade:10,
       putoutsize:'middle',
       extentarr:{
@@ -176,6 +187,7 @@ export default {
         },
       },
       extent:{},
+      extentClickListen:{},
       symbol: {
         type: "simple-fill", 
         color: [135,206,250,0.5],
@@ -192,11 +204,21 @@ export default {
       },
     }
   },
+  computed:{
+    centerX:function(){
+      let generalX = (this.thisExtent.xmax-this.thisExtent.xmin)/2;
+      return this.thisExtent.xmin+generalX;
+    },
+    centerY:function(){
+      let generalY = (this.thisExtent.ymax-this.thisExtent.ymin)/2;
+      return this.thisExtent.ymin+generalY;
+    },
+  },
   created() {
     this.createPutoutExteng(this);
-    //将创建view监听，获取元素被点击事件
   },
   beforeDestroy() {
+    this.extentClickListen.remove();
     let proplayer = this.thisview.map.findLayerById('ToolsGraphicsLayer');
     this.thisview.map.remove(proplayer);
   },
@@ -211,11 +233,10 @@ export default {
         'esri/layers/GraphicsLayer',
         "esri/geometry/Extent",
       ]).then(([GraphicsLayer,Extent])=>{
-        // console.log(vm)
         //创建绘图图层,如具有绘图层则先去除再添加
         let proplayer = vm.thisview.map.findLayerById('ToolsGraphicsLayer');
         vm.thisview.map.remove(proplayer);
-        vm.extent = new Extent({
+        let extent = new Extent({
           xmin: vm.thisExtent.xmin,
           ymin: vm.thisExtent.ymin,
           xmax: vm.thisExtent.xmax,
@@ -225,14 +246,44 @@ export default {
           }
         });
         let Graphic ={
-          geometry: vm.extent,
-          symbol: vm.symbol
+          geometry: extent,
+          symbol: vm.symbol,
+          attributes: {
+            keyvalue: "imPutoutMap"
+          }
         };
         let GrLayer = new GraphicsLayer({
           id:'ToolsGraphicsLayer'
         });
         vm.thisview.map.add(GrLayer);
         GrLayer.graphics.add(Graphic);
+        //创建页面监听,选中需要截图的覆盖面视图
+        vm.extentClickListen = vm.thisview.on("click", function(event) {
+          let generalX = (vm.thisExtent.xmax-vm.thisExtent.xmin)/2;
+          let generalY = (vm.thisExtent.ymax-vm.thisExtent.ymin)/2;
+          vm.thisExtent={
+            xmin: event.mapPoint.x-generalX,
+            ymin: event.mapPoint.y-generalY,
+            xmax: event.mapPoint.x+generalX,
+            ymax: event.mapPoint.y+generalY,
+          };
+          let newExtent = new Extent({
+            xmin: vm.thisExtent.xmin,
+            ymin: vm.thisExtent.ymin,
+            xmax: vm.thisExtent.xmax,
+            ymax: vm.thisExtent.ymax,
+            spatialReference: vm.thisview.spatialReference
+          });
+          let newGraphic ={
+            geometry: newExtent,
+            symbol: vm.symbol,
+            attributes: {
+              keyvalue: "imPutoutMap"
+            }
+          };
+          GrLayer.graphics.removeAll();
+          GrLayer.graphics.add(newGraphic);
+        })
       })
     },
     //更改图形层级
@@ -252,17 +303,15 @@ export default {
       esriLoader.loadModules([
         "esri/geometry/Extent",
       ]).then(([Extent])=>{
-        vm.extent = new Extent({
+        let extent = new Extent({
           xmin: vm.thisExtent.xmin,
           ymin: vm.thisExtent.ymin,
           xmax: vm.thisExtent.xmax,
           ymax: vm.thisExtent.ymax,
-          spatialReference: {
-            wkid: 4326
-          }
+          spatialReference: vm.thisview.spatialReference
         });
         let Graphic ={
-          geometry: vm.extent,
+          geometry: extent,
           symbol: vm.symbol
         };
         //移除视图的图形层,添加新图形
@@ -270,6 +319,62 @@ export default {
         proplayer.graphics.removeAll();
         proplayer.graphics.add(Graphic);
       })
+    },
+    /**
+     * 获取mimeType
+     * @param  {String} type the old mime-type
+     * @return the new mime-type
+     */
+    _fixType(type) {
+        type = type.toLowerCase().replace(/jpg/i, 'jpeg');
+        var r = type.match(/png|jpeg|bmp|gif/)[0];
+        return 'image/' + r;
+    },
+    //从缓存中输出地图图片
+    _saveFile(data, filename) {
+      const save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+      save_link.href = data;
+      save_link.download = filename;
+      const event = document.createEvent('MouseEvents');
+      event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      save_link.dispatchEvent(event);
+    },
+    putoutMap(){
+      let mapElement = this.$parent.$refs.viewDiv;
+      let extent = this.thisview.extent;
+      let proplayer = this.thisview.map.findLayerById('ToolsGraphicsLayer');
+      proplayer.visible = false;
+      this.thisview.zoom = this.putoutGrade;
+      mapElement.style.zIndex = 100;
+      mapElement.style.height = this.extentarr[this.putoutsize].height;
+      mapElement.style.width = this.extentarr[this.putoutsize].width;
+      this.thisview.center = [this.centerX, this.centerY]; 
+      var watchPutoutMap = this.thisview.watch("updating",
+        (value)=>{
+          if(!value){
+            html2canvas(
+              mapElement,
+              {
+                seCORS : true,
+                foreignObjectRendering : true,
+                allowTaint :false,
+                logging:false
+              }
+            ).then(canvas=>{
+              mapElement.style.zIndex = '';
+              mapElement.style.height = '100%';
+              mapElement.style.width = '100%';
+              proplayer.visible = true;
+              this.thisview.extent=extent;
+              watchPutoutMap.remove();
+              let imgData = canvas.toDataURL();
+                console.log(imgData);
+              }).catch(err=>{
+              console.error(err);
+            })
+          }
+        }
+      )
     }
   },
 }
