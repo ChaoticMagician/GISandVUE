@@ -28,8 +28,8 @@ export default new Router({
       component: home,
       children:[
         {
-          path: '/home/defaule',
-          name: 'defaule',
+          path: '/home/default',
+          name: 'default',
           component: ModelMap
         },
         {

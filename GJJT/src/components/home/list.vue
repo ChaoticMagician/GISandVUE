@@ -12,7 +12,7 @@
         <i class="el-icon-menu"></i>
         <span slot="title">辅助规划</span>
       </el-menu-item>
-      <el-menu-item index="3" route="defaule">
+      <el-menu-item index="3" route="default">
         <i class="el-icon-document"></i>
         <span slot="title">规划评价</span>
       </el-menu-item>
