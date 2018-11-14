@@ -320,26 +320,37 @@ export default {
         proplayer.graphics.add(Graphic);
       })
     },
-    /**
-     * 获取mimeType
-     * @param  {String} type the old mime-type
-     * @return the new mime-type
-     */
-    _fixType(type) {
-        type = type.toLowerCase().replace(/jpg/i, 'jpeg');
-        var r = type.match(/png|jpeg|bmp|gif/)[0];
-        return 'image/' + r;
+    //下载
+    _downloadFile(fileName, content) {
+      let aLink = document.createElement('a');
+      let blob = this._base64ToBlob(content); //new Blob([content]);
+      let evt = document.createEvent("HTMLEvents");
+      aLink.download = fileName;
+      aLink.href = URL.createObjectURL(blob);
+      evt.initEvent("click", true, true);//initEvent  事件类型，是否冒泡，是否阻止浏览器的默认行为
+      aLink.click()
     },
-    //从缓存中输出地图图片
-    _saveFile(data, filename) {
-      const save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-      save_link.href = data;
-      save_link.download = filename;
-      const event = document.createEvent('MouseEvents');
-      event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      save_link.dispatchEvent(event);
+    //base64转blob
+    _base64ToBlob(code) {
+      let parts = code.split(';base64,');
+      let contentType = parts[0].split(':')[1];
+      let raw = window.atob(parts[1]);
+      let rawLength = raw.length;
+
+      let uInt8Array = new Uint8Array(rawLength);
+
+      for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+      }
+      return new Blob([uInt8Array], {type: contentType});
     },
     putoutMap(){
+      //创建提示，提示用户等待操作结束。
+      let messageRemove = this.$message({
+        message: '请耐心等待地图下载，下载完成前请勿操作！',
+        type: 'warning',
+        duration:0
+      });
       let mapElement = this.$parent.$refs.viewDiv;
       let extent = this.thisview.extent;
       let proplayer = this.thisview.map.findLayerById('ToolsGraphicsLayer');
@@ -352,6 +363,8 @@ export default {
       var watchPutoutMap = this.thisview.watch("updating",
         (value)=>{
           if(!value){
+            //移除提示
+            messageRemove.close();
             html2canvas(
               mapElement,
               {
@@ -368,8 +381,9 @@ export default {
               this.thisview.extent=extent;
               watchPutoutMap.remove();
               let imgData = canvas.toDataURL();
-                console.log(imgData);
+              this._downloadFile('输出地图.png',imgData)
               }).catch(err=>{
+              if(messageRemove.close){messageRemove.close();}
               console.error(err);
             })
           }
