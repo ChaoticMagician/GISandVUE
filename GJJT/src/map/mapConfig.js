@@ -335,7 +335,7 @@ export function arcgisConfig () {
         visible: false
       },
       {
-        id:'geojsonprint',
+        id:'geojsonhertprint',
         title:'门址热力图',
         url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
         type:'geojsonURL',
@@ -343,6 +343,17 @@ export function arcgisConfig () {
         opacity: 1,
         visible: false,
         renderer:Renderer.heatmap
+      },
+      {
+        id:'geojsonclusterprint',
+        title:'门址聚合图',
+        url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
+        type:'cluster',
+        Version:'1.0.0',
+        opacity: 1,
+        visible: false,
+        clusterRenderer:{},
+        flareRenderer:{}
       },
       // {
       //   id:'geojsonline',

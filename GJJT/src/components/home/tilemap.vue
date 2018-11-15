@@ -41,6 +41,11 @@
         v-if="whichToolIs == 'ifoutput'"
         @chance-if-putout='whichToolIs="false"'
       ></putout-map>
+        <listmenu id="list-all"></listmenu>
+      <router-view
+        class="workModel"
+      >
+      </router-view>
   </div>
 </template>
 
@@ -51,10 +56,12 @@ import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
 import drawQuery   from '@/components/home/popup/drawQuery'
 import putoutMap   from '@/components/home/popup/putoutMap'
+
+import listmenu from '@/components/home/list'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList,drawQuery,putoutMap
+    baseMapList,layerList,tameList,drawQuery,putoutMap,listmenu
   },
   data () {
     return {
@@ -281,7 +288,7 @@ export default {
         let chancedlayerobj = this.thismap.findLayerById(chancedlayerid);
         chancedlayerobj.visible = visible;
         //添加弹窗用的featurelayer图层；
-        if(chancedlayerobj.visible&&chancedlayerobj.type!="feature"){
+        if(chancedlayerobj.visible&&chancedlayerobj.featureInfoUrl){
           esriRequest(chancedlayerobj.featureInfoUrl, { responseType: "json" })
           .then((response) => {
             let proplayer = geojsonDataToFeatureLayer.geojsonDataToFeature(response.data,chancedlayerobj.id+"fea",chancedlayerobj.featureInfoField);
@@ -308,6 +315,13 @@ export default {
 </script>
 
 <style scoped>
+  #list-all{
+    position: fixed;
+    z-index: 12;
+    width: 130px;
+    top: 120px;
+    left: 15px;
+  }
   #viewDiv {
     position: relative;
     padding: 0;
@@ -325,6 +339,13 @@ export default {
     float: left;
     display: flex;
     align-items: center; 
+  }
+  .workModel{
+    position: fixed;
+    z-index: 12;
+    width: 130px;
+    top: 120px;
+    left: 15px;
   }
   .toolsListDiv{
     padding: 3px 1px;
