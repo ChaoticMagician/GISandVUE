@@ -41,11 +41,10 @@
         v-if="whichToolIs == 'ifoutput'"
         @chance-if-putout='whichToolIs="false"'
       ></putout-map>
-        <listmenu id="list-all"></listmenu>
-      <router-view
-        class="workModel"
-      >
-      </router-view>
+      <transition name="drop">
+        <router-view class="workModel">
+        </router-view>
+      </transition>
   </div>
 </template>
 
@@ -56,12 +55,10 @@ import layerList   from '@/components/home/layersList/layerList'
 import tameList    from '@/components/home/layersList/tameList'
 import drawQuery   from '@/components/home/popup/drawQuery'
 import putoutMap   from '@/components/home/popup/putoutMap'
-
-import listmenu from '@/components/home/list'
 export default {
   name: 'tilemap',
   components:{
-    baseMapList,layerList,tameList,drawQuery,putoutMap,listmenu
+    baseMapList,layerList,tameList,drawQuery,putoutMap
   },
   data () {
     return {
@@ -168,14 +165,13 @@ export default {
               //用个人封装的方法将geojson数据转换为graphics的集合
               var Graphics = geojsonDataToFeatureLayer.geojsonDataToGraphics(response.data);
               //用个人封装的方法将graphics的集合转换为featureLayer图层，并添加渲染器
-              //PS：如果为点线面图层，具有默认的渲染器；方法传参如下：
-              // function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,renderjson){}
               var learyreturn = geojsonDataToFeatureLayer.GraphicsToFeatureLayer(
                 Graphics,
                 tram.id,
                 tram.title,
                 tram.opacity,
                 tram.visible,
+                tram.featureInfoField,
                 tram.renderer,
               );
               map.add(learyreturn);
@@ -315,6 +311,18 @@ export default {
 </script>
 
 <style scoped>
+  .drop-enter-active {
+    transition: all .8s ease;
+  }
+  .drop-leave-active {
+    transition: all .5s ease;
+  }
+  .drop-enter {
+    transform: translateX(-200px);
+  }
+  .drop-leave-active {
+    transform: translateX(-200px);
+  }
   #list-all{
     position: fixed;
     z-index: 12;

@@ -45,10 +45,10 @@ define([
         )
     };
     //将graphic集合转成FeatureLayer，PS：必须需要创建字段类型对照表；
-    function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,renderjson){
+    function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,titleField,renderjson){
         //创建字段类型对照表
         let fields = _getfields(Graphics);
-        // let popupTemplate =_getpopufields(fields)
+        let popupTemplate =_getpopufields(fields,titleField)
         //在renderjson参数为空的情况下，用模块内的默认渲染器
         let thisrenderer = renderjson||_getRenderer(Graphics[0].geometry.type);
 
@@ -57,12 +57,13 @@ define([
             title,
             opacity,
             visible,
+            keyID:titleField,
             geometryType: Graphics[0].geometry.type,
             source: Graphics,
             fields,
             objectIdField: "OBJECTID",
             renderer: thisrenderer,
-            // popupTemplate
+            popupTemplate
         });
         return layer;
     };

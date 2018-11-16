@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name:'retuarnMap',
+  name:'graphmap',
   data(){
     return{
       myBaseMap:{}

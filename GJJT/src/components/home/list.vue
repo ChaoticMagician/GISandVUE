@@ -12,13 +12,13 @@
         <i class="el-icon-menu"></i>
         <span slot="title">辅助规划</span>
       </el-menu-item>
-      <el-menu-item index="3" route="default">
+      <el-menu-item index="3" route="/home/default">
         <i class="el-icon-document"></i>
         <span slot="title">规划评价</span>
       </el-menu-item>
-      <el-menu-item index="4" route="returnMap">
+      <el-menu-item index="4" route="/home/graphmap">
         <i class="el-icon-setting"></i>
-        <span slot="title">专题图输出</span>
+        <span slot="title">专题图分析</span>
       </el-menu-item>
     </el-menu>
   </el-col>

@@ -6,8 +6,8 @@ import home from '@/components/home'
 import test from '@/components/test'
 
 import ModelMap from '@/components/home/modelmap'
-import retuarnMap from '@/components/home/retuarnMap'
-
+import graphmap from '@/components/home/graphmap'
+import listmenu from '@/components/home/list'
 Vue.use(Router)
 
 export default new Router({
@@ -28,14 +28,19 @@ export default new Router({
       component: home,
       children:[
         {
+          path: '/home',
+          name: 'listmenu',
+          component: listmenu
+        },
+        {
           path: '/home/default',
           name: 'default',
           component: ModelMap
         },
         {
-          path: '/home/returnmap',
-          name: 'returnMap',
-          component: retuarnMap
+          path: '/home/graphmap',
+          name: 'graphmap',
+          component: graphmap
         }
       ]
     },

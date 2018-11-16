@@ -302,6 +302,7 @@ export function arcgisConfig () {
           name: "FGM"
         },
         type:'wms',
+        layerType:'Polygon',
         Version:'1.1.0',
         opacity: 1,
         visible: false
@@ -316,6 +317,7 @@ export function arcgisConfig () {
           name: "MZ"
         },
         type:'wms',
+        layerType:'Point',
         Version:'1.1.0',
         opacity: 1,
         visible: false
@@ -330,49 +332,43 @@ export function arcgisConfig () {
           name: "DL"
         },
         type:'wms',
+        layerType:'Polyline',
         Version:'1.1.0',
         opacity: 1,
         visible: false
       },
+      // {
+      //   id:'geojsonhertprint',
+      //   title:'门址热力图',
+      //   url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
+      //   type:'geojsonURL',
+      //   Version:'1.0.0',
+      //   opacity: 1,
+      //   visible: false,
+      //   renderer:Renderer.heatmap
+      // },
+      // {
+      //   id:'geojsonclusterprint',
+      //   title:'门址聚合图',
+      //   url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
+      //   type:'cluster',
+      //   Version:'1.0.0',
+      //   opacity: 1,
+      //   visible: false,
+      //   clusterRenderer:{},
+      //   flareRenderer:{}
+      // },
       {
-        id:'geojsonhertprint',
-        title:'门址热力图',
-        url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
+        id:'geojsonline',
+        title:'道路json',
+        url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:DL&outputFormat=application%2Fjson',
+        featureInfoField:'YSMC',
         type:'geojsonURL',
+        layerType:'Polyline',
         Version:'1.0.0',
         opacity: 1,
-        visible: false,
-        renderer:Renderer.heatmap
+        visible: false
       },
-      {
-        id:'geojsonclusterprint',
-        title:'门址聚合图',
-        url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:MZ&outputFormat=application%2Fjson',
-        type:'cluster',
-        Version:'1.0.0',
-        opacity: 1,
-        visible: false,
-        clusterRenderer:{},
-        flareRenderer:{}
-      },
-      // {
-      //   id:'geojsonline',
-      //   title:'道路json',
-      //   url: 'http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:DL&outputFormat=application%2Fjson',
-      //   type:'geojsonURL',
-      //   Version:'1.0.0',
-      //   opacity: 1,
-      //   visible: false
-      // },
-      // {
-      //   id:'geojsonare',
-      //   title:'楼房json',
-      //   url: "http://123.56.17.204:8081/geoserver/selfmap/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=selfmap:FGM&outputFormat=application%2Fjson",
-      //   type:'geojsonURL',
-      //   Version:'1.0.0',
-      //   opacity: 1,
-      //   visible: false
-      // },
     ],
 
   };
