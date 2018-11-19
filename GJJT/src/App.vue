@@ -37,7 +37,6 @@ export default {
 }
 .darwButtens .el-button{
   padding: 7px;
-  /* font-size: 15px; */
 }
 .darwButtens .el-input{
   width:30%;
@@ -47,5 +46,12 @@ export default {
 }
 .imgView .el-card__header{
   padding: 8px 20px;
+}
+/* 业务模块视窗样式 */
+.graphmap .el-card__header{
+  padding: 8px 20px;
+}
+.graphmap .el-card__body{
+  padding: 0 0 0 0;
 }
 </style>

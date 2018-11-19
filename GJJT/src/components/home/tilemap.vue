@@ -7,8 +7,12 @@
         <div class="toolsListDiv" id="litter"><i id="litter" class="toolsLIstIcon iconfont icon-suoxiao1"></i>缩小</div>
         <div class="toolsListDiv" id="output"><i id="allmap" class="toolsLIstIcon iconfont icon-fangda1"></i>输出</div>
         <div class="toolsListDiv" id="query"><i id="query" class="toolsLIstIcon iconfont icon-ditu1"></i>查询</div>
-        <div class="toolsListDiv" id="long"><i id="long" class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
-        <div class="toolsListDiv" id="area"><i id="area" class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
+        <el-tooltip class="item" effect="light" content="单击后绘制长度" placement="top">
+          <div class="toolsListDiv" id="long"><i id="long" class="toolsLIstIcon iconfont icon-dituchizi"></i>长度</div>
+        </el-tooltip>
+        <el-tooltip class="item" effect="light" content="单击后请绘制面积" placement="top">
+          <div class="toolsListDiv" id="area"><i id="area" class="toolsLIstIcon iconfont icon-ditu1"></i>面积</div>
+        </el-tooltip>
         <div class="toolsListDiv" id="legend"><i id="legend" class="toolsLIstIcon iconfont icon-ditudaohang-"></i>图例</div>
         <div class="toolsListDiv" id="remove"><i id="remove" class="toolsLIstIcon iconfont icon-ditu"></i>清除</div>
       </div>
@@ -41,8 +45,9 @@
         v-if="whichToolIs == 'ifoutput'"
         @chance-if-putout='whichToolIs="false"'
       ></putout-map>
+      <!-- 这是业务模块视窗功能窗口 -->
       <transition name="drop">
-        <router-view class="workModel">
+        <router-view class="workModel" :thisview=thisview>
         </router-view>
       </transition>
   </div>
@@ -348,13 +353,13 @@ export default {
     display: flex;
     align-items: center; 
   }
-  .workModel{
+  /* .workModel{
     position: fixed;
     z-index: 12;
     width: 130px;
     top: 120px;
     left: 15px;
-  }
+  } */
   .toolsListDiv{
     padding: 3px 1px;
     display: inline-block;

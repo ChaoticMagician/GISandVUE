@@ -1,5 +1,5 @@
 <template>
-  <el-col :span="12">
+  <el-col :span="12" class="list" >
     <img id="list-img" src="@/assets/logo.png" alt="">
     <el-menu
       class="el-menu-vertical-demo"
@@ -18,7 +18,7 @@
       </el-menu-item>
       <el-menu-item index="4" route="/home/graphmap">
         <i class="el-icon-setting"></i>
-        <span slot="title">专题图分析</span>
+        <span slot="title">空间分析</span>
       </el-menu-item>
     </el-menu>
   </el-col>
@@ -28,15 +28,22 @@
 export default {
 
   name:'list',
-    data(){
-        return{
+  data(){
+      return{
 
-        }
-    }
+      }
+  }
 }
 </script>
 
 <style scoped>
+.list{
+  position: fixed;
+  z-index: 12;
+  width: 130px;
+  top: 120px;
+  left: 15px;
+}
 #list-img{
     margin: 0 0 0 35px;
     width: 75px;
