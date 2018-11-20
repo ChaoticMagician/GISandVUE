@@ -25,33 +25,32 @@
         <span class="headerAdd"><i class="el-icon-plus"></i></span>
       </el-tooltip>
     </div>
-  <el-tabs
-    :value='thisprojs'
-    type="card"
-    closable
-    @tab-remove='tabRemoveEven'
-    @tab-click="e=>{thisprojs=e.name}">
-    <el-tab-pane
-      v-for="(item,index) in openprojs"
-      :key="index+13"
-      :label="item.title"
-      :name="item.name"
-      >
-      {{item.name}}
-    <!-- <component :is=""></component> -->
-    </el-tab-pane>
-  </el-tabs>
-
-
+    <el-tabs
+      :value='thisprojs'
+      type="card"
+      closable
+      @tab-remove='tabRemoveEven'
+      @tab-click="e=>{thisprojs=e.name}">
+      <el-tab-pane
+        v-for="(item,index) in openprojs"
+        :key="index+13"
+        :label="item.title"
+        :name="item.name">
+        <component
+          :thisview=thisview
+          :is="item.name">
+        </component>
+      </el-tab-pane>
+    </el-tabs>
   </el-card>
 </template>
 
 <script>
 export default {
   name:'graphmap',
-  // components: {
-  //   historyTab: resolve => {require(['../../component/historyTab/historyTab.vue'], resolve)},//懒加载
-  // },
+  components: {
+    heatmap: resolve => {require(['./heatmap.vue'], resolve)},//懒加载
+  },
   props:[
     'thisview'
   ],
@@ -64,14 +63,13 @@ export default {
         },
         {
           title: '聚合图',
-          name: 'clonemap',
-          checked: true
+          name: 'clonemap'
         }],
       openprojs:[],
       thisprojs:'heatmap'
     }
   },
-  created() {
+  mounted() {
   },
   methods: {
     tabRemoveEven(name){

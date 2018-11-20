@@ -6,7 +6,7 @@ import home from '@/components/home'
 import test from '@/components/test'
 
 import ModelMap from '@/components/home/modelmap'
-import graphmap from '@/components/home/graphmap'
+import graphmap from '@/components/home/graphmap/graphmap'
 import listmenu from '@/components/home/list'
 Vue.use(Router)
 

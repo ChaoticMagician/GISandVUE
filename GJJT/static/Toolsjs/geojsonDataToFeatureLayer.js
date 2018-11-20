@@ -7,7 +7,8 @@ define([
     return {
         geojsonDataToGraphics,
         GraphicsToFeatureLayer,
-        geojsonDataToFeature
+        geojsonDataToFeature,
+        getfields
     };
     
     //创建geojson转成graphic集合，依据不同的要素类型创建不同的要素graphic；
@@ -47,8 +48,11 @@ define([
     //将graphic集合转成FeatureLayer，PS：必须需要创建字段类型对照表；
     function GraphicsToFeatureLayer(Graphics,id,title,opacity,visible,titleField,renderjson){
         //创建字段类型对照表
-        let fields = _getfields(Graphics);
-        let popupTemplate =_getpopufields(fields,titleField)
+        let fields = getfields(Graphics);
+        //如果没有关键词则不添加弹窗
+        if(titleField){
+            var popupTemplate =_getpopufields(fields,titleField)
+        }
         //在renderjson参数为空的情况下，用模块内的默认渲染器
         let thisrenderer = renderjson||_getRenderer(Graphics[0].geometry.type);
 
@@ -72,7 +76,7 @@ define([
         //用geojsonData创建Graphics
         let Graphics = geojsonDataToGraphics(geojsonData);
         //创建字段类型对照表
-        let fields = _getfields(Graphics);
+        let fields = getfields(Graphics);
         let popupTemplate =_getpopufields(fields,titleField)
         let layer = new FeatureLayer({
             id,
@@ -86,7 +90,7 @@ define([
         return layer;
     };
     //创建字段类型对照表
-    function _getfields(Graphics){
+    function getfields(Graphics){
         let fields = [];
         for (const key in Graphics[0].attributes) {
             if (Graphics[0].attributes.hasOwnProperty(key) === true ) {
